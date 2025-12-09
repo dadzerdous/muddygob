@@ -3,32 +3,59 @@
 //---------------------------------------------------------
 const output = document.getElementById("output");
 const input = document.getElementById("input");
-const status = document.getElementById("connection-status");
+const statusEl = document.getElementById("connection-status");
 
-const ws = new WebSocket("wss://muddygob-server-1.onrender.com");
+const welcomeScreen = document.getElementById("welcome-screen");
+const gameUI = document.getElementById("game-ui");
 
+const modalOverlay = document.getElementById("modal-overlay");
+const authTitle = document.getElementById("auth-title");
+const authUsername = document.getElementById("auth-username");
+const authPassword = document.getElementById("auth-password");
+const authError = document.getElementById("auth-error");
+const btnAuthConfirm = document.getElementById("auth-confirm");
+const btnAuthCancel = document.getElementById("auth-cancel");
 
-// Show initial message on welcome screen
-status.textContent = "Connecting...";
+const btnNew = document.getElementById("btn-new");
+const btnLogin = document.getElementById("btn-login");
+const btnSend = document.getElementById("send");
 
+let authMode = null; // "create" or "login"
+let ws;
 
-//---------------------------------------------------------
-// CLEAN CONNECTION EVENTS
-//---------------------------------------------------------
-ws.onopen = () => {
-    status.textContent = "✓ Connected!";
-};
+// Use your Render URL
+initWebSocket("wss://muddygob-server-1.onrender.com");
 
-ws.onerror = (err) => {
-    status.textContent = "⚠ Unable to connect to server";
-    addMessage(`<div style="color:red;">Error: ${err}</div>`);
-};
+function initWebSocket(url) {
+    ws = new WebSocket(url);
 
-ws.onclose = () => {
-    status.textContent = "✖ Connection closed";
-    addMessage(`<div style="color:red;">Connection closed.</div>`);
-};
+    statusEl.textContent = "Connecting...";
 
+    ws.onopen = () => {
+        statusEl.textContent = "✓ Connected!";
+    };
+
+    ws.onerror = (err) => {
+        console.error("WebSocket error:", err);
+        statusEl.textContent = "⚠ Unable to connect to server";
+        addMessage(`<div style="color:red;">Error: ${err}</div>`);
+    };
+
+    ws.onclose = () => {
+        statusEl.textContent = "✖ Connection closed";
+        addMessage(`<div style="color:red;">Connection closed.</div>`);
+    };
+
+    ws.onmessage = (event) => {
+        if (event.data instanceof Blob) {
+            const reader = new FileReader();
+            reader.onload = () => handleMessage(reader.result);
+            reader.readAsText(event.data, "UTF-8");
+        } else {
+            handleMessage(event.data);
+        }
+    };
+}
 
 //---------------------------------------------------------
 // BASIC UI HELPERS
@@ -40,17 +67,22 @@ function addMessage(html) {
 
 function renderSystem(msg) {
     addMessage(`<div class="system-msg">${msg}</div>`);
+    // If modal is open, also show message there
+    if (!modalOverlay.classList.contains("hidden")) {
+        authError.textContent = msg;
+    }
 }
 
 function setBackground(name) {
+    if (!name) return;
     document.body.style.backgroundImage = `url("images/${name}.jpg")`;
 }
 
-
 //---------------------------------------------------------
-// SEND INPUT
+// SEND INPUT (in-game text)
 //---------------------------------------------------------
 function sendToServer() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
     const text = input.value.trim();
     if (text === "") return;
     ws.send(text);
@@ -61,58 +93,56 @@ input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendToServer();
 });
 
-document.getElementById("send").onclick = sendToServer;
-
-
-//---------------------------------------------------------
-// HANDLE MESSAGES (supports Blob + JSON)
-//---------------------------------------------------------
-ws.onmessage = (event) => {
-
-    if (event.data instanceof Blob) {
-        const reader = new FileReader();
-        reader.onload = () => handleMessage(reader.result);
-        reader.readAsText(event.data, "UTF-8");
-    } else {
-        handleMessage(event.data);
-    }
-};
-
+btnSend.onclick = sendToServer;
 
 //---------------------------------------------------------
-// MAIN DISPATCHER
+// MAIN MESSAGE DISPATCHER
 //---------------------------------------------------------
 function handleMessage(raw) {
     let data;
-
-    try { data = JSON.parse(raw); }
-    catch { addMessage(raw); return; }
+    try {
+        data = JSON.parse(raw);
+    } catch {
+        addMessage(raw);
+        return;
+    }
 
     switch (data.type) {
-        case "system": renderSystem(data.msg); break;
-        case "room": renderRoom(data); break;
-        case "death": renderDeath(data); break;
-        default: console.log("Unknown packet:", data);
+        case "system":
+            renderSystem(data.msg);
+            break;
+        case "room":
+            // Successful login/create should result in room data
+            hideWelcomeAndModal();
+            renderRoom(data);
+            break;
+        case "death":
+            renderDeath(data);
+            break;
+        default:
+            console.log("Unknown packet:", data);
     }
 }
-
 
 //---------------------------------------------------------
 // RENDER ROOM
 //---------------------------------------------------------
 function renderRoom(room) {
-
     let html = `
-    <div style="color:#b29eff;font-size:24px;margin-bottom:8px;">
-        <b>${room.title}</b>
-    </div>`;
+        <div style="color:#b29eff;font-size:24px;margin-bottom:8px;">
+            <b>${room.title}</b>
+        </div>`;
+
+    if (room.background) {
+        setBackground(room.background);
+    }
 
     const order = ["up", "down", "left", "right"];
     const arrows = { up:"↑", down:"↓", left:"←", right:"→" };
 
     html += `<div class="exits-block"><b>Exits</b><br>`;
     order.forEach(dir => {
-        let active = room.exits.includes(dir);
+        const active = room.exits && room.exits.includes(dir);
         html += `
             <div class="exit-option ${active ? "active-exit" : "inactive-exit"}">
                 ${arrows[dir]} <span>${dir}</span>
@@ -120,49 +150,45 @@ function renderRoom(room) {
     });
     html += `</div>`;
 
-    room.desc.forEach(line => {
+    (room.desc || []).forEach(line => {
         html += `<p style="color:#eae6ff;margin:3px 0;">${line}</p>`;
     });
 
     html += `<div style="margin-top:10px;color:#aaffcc;">
         <b>Players here:</b><br>
-        ${room.players.map(p => "• " + p).join("<br>")}
+        ${(room.players || []).map(p => "• " + p).join("<br>") || "• (just you)"}
     </div>`;
 
     addMessage(html);
 }
 
-
 //---------------------------------------------------------
-// RENDER DEATH SCREEN
+// RENDER DEATH
 //---------------------------------------------------------
 function renderDeath(data) {
-
     let html = `
         <div style="color:#ff6666; font-size:22px; margin-bottom:10px;">
             <b>${data.title}</b>
         </div>
     `;
-
-    data.desc.forEach(line => {
+    (data.desc || []).forEach(line => {
         html += `<p style="color:#ffc9c9;">${line}</p>`;
     });
 
     html += `
         <p style="margin-top:10px; color:#ffaaaa;">
-            ${data.prompt}
+            ${data.prompt || "You died."}
         </p>
     `;
 
     addMessage(html);
 }
 
-
 //---------------------------------------------------------
 // ARROW KEY MOVEMENT
 //---------------------------------------------------------
 document.addEventListener("keydown", e => {
-    if (ws.readyState !== WebSocket.OPEN) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
     switch (e.key) {
         case "ArrowUp": ws.send("move up"); break;
@@ -172,26 +198,82 @@ document.addEventListener("keydown", e => {
     }
 });
 
-
 //---------------------------------------------------------
-// WELCOME SCREEN LOGIC
+// WELCOME + MODAL LOGIC
 //---------------------------------------------------------
-document.getElementById("welcome-screen").classList.remove("hidden");
-document.getElementById("output").style.display = "none";
-document.getElementById("input-bar").style.display = "none";
-
-function showGameUI() {
-    document.getElementById("welcome-screen").classList.add("hidden");
-    document.getElementById("output").style.display = "block";
-    document.getElementById("input-bar").style.display = "flex";
+function hideWelcomeAndModal() {
+    welcomeScreen.classList.add("hidden");
+    modalOverlay.classList.add("hidden");
+    gameUI.classList.remove("hidden");
+    authError.textContent = "";
+    authUsername.value = "";
+    authPassword.value = "";
 }
 
-document.getElementById("btn-new").onclick = () => {
-    ws.send("newgame");
-    showGameUI();
+function showAuthModal(mode) {
+    authMode = mode; // "create" or "login"
+    authError.textContent = "";
+    authUsername.value = "";
+    authPassword.value = "";
+
+    if (mode === "create") {
+        authTitle.textContent = "Create Account";
+        btnAuthConfirm.textContent = "Create";
+    } else {
+        authTitle.textContent = "Login";
+        btnAuthConfirm.textContent = "Join";
+    }
+
+    modalOverlay.classList.remove("hidden");
+    authUsername.focus();
+}
+
+// initial state: welcome visible, game UI hidden
+welcomeScreen.classList.remove("hidden");
+gameUI.classList.add("hidden");
+modalOverlay.classList.add("hidden");
+
+// Buttons
+btnNew.onclick = () => {
+    showAuthModal("create");
 };
 
-document.getElementById("btn-login").onclick = () => {
-    ws.send("login");
-    showGameUI();
+btnLogin.onclick = () => {
+    showAuthModal("login");
+};
+
+btnAuthCancel.onclick = () => {
+    modalOverlay.classList.add("hidden");
+    authError.textContent = "";
+};
+
+btnAuthConfirm.onclick = () => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        authError.textContent = "Not connected to server.";
+        return;
+    }
+
+    const name = authUsername.value.trim();
+    const pass = authPassword.value.trim();
+
+    if (!name || !pass) {
+        authError.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    if (authMode === "create") {
+        ws.send(JSON.stringify({
+            type: "create_account",
+            name,
+            password: pass
+        }));
+    } else if (authMode === "login") {
+        ws.send(JSON.stringify({
+            type: "login",
+            name,
+            password: pass
+        }));
+    } else {
+        authError.textContent = "Unknown auth mode.";
+    }
 };
