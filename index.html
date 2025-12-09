@@ -2,65 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dark Fantasy MUD</title>
+    <title>MuddyGob – Dark Fantasy MUD</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
-
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dark Fantasy MUD</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
 <body>
 
-<!-- connection status SHOULD BE OUTSIDE the hidden screen -->
-<p id="connection-status" style="color:#aaa; margin:10px 0 20px 0;"></p>
+    <!-- Connection status -->
+    <p id="connection-status" class="connection-status"></p>
 
-<div id="welcome-screen" class="screen hidden">
-    <h1>M U D D Y G O B</h1>
-    <p>A dark fantasy multiplayer story</p>
+    <!-- Welcome screen -->
+    <div id="welcome-screen" class="screen">
+        <h1>M U D D Y G O B</h1>
+        <p>A dark fantasy multiplayer story</p>
 
-    <button id="btn-new">New Game</button>
-    <button id="btn-login">Login</button>
-</div>
-
-<div id="output"></div>
-
-<div id="input-bar">
-    <input id="input" type="text" placeholder="Type a command..." autocomplete="off">
-    <button id="send" onclick="sendToServer()">Send</button>
-</div>
-
-<script src="client.js"></script>
-</body>
-</html>
-
-<div id="welcome-screen" class="screen hidden">
-<p id="connection-status" style="color:#aaa; margin-top:20px;"></p>
-
-    <h1>M U D D Y G O B</h1>
-    <p>A dark fantasy multiplayer story</p>
-
-    <button id="btn-new">New Game</button>
-    <button id="btn-login">Login</button>
-</div>
-
-
-    <div id="output"></div>
-
-    <div id="input-bar">
-        <input id="input" type="text" placeholder="Type a command..." autocomplete="off">
-        <button id="send" onclick="sendToServer()">Send</button>
+        <div class="welcome-buttons">
+            <button id="btn-new">New</button>
+            <button id="btn-login">Login</button>
+        </div>
     </div>
 
+    <!-- Game UI -->
+    <div id="game-ui" class="hidden">
+        <div id="output"></div>
 
+        <div id="input-bar">
+            <input id="input" type="text" placeholder="Type a command..." autocomplete="off">
+            <button id="send">Send</button>
+        </div>
+    </div>
+
+    <!-- Smoky modal overlay -->
+    <div id="modal-overlay" class="hidden">
+        <div id="auth-modal">
+            <h2 id="auth-title">Create Account</h2>
+
+            <label class="auth-field">
+                <span>Username</span>
+                <input id="auth-username" type="text" autocomplete="off">
+            </label>
+
+            <label class="auth-field">
+                <span>Password</span>
+                <input id="auth-password" type="password" autocomplete="off">
+            </label>
+
+            <p id="auth-error" class="auth-error"></p>
+
+            <div class="auth-buttons">
+                <button id="auth-confirm">Create</button>
+                <button id="auth-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <script src="client.js"></script>
 </body>
 </html>
-
