@@ -2,7 +2,7 @@
 // CONNECT TO SERVER
 //---------------------------------------------------------
 const output = document.getElementById("output");
-const ws = new WebSocket("ws://localhost:9000");
+const ws = new WebSocket("ws://192.168.0.186:9000");
 
 //---------------------------------------------------------
 // BASIC UI HELPERS
@@ -255,3 +255,4 @@ document.addEventListener("keydown", (e) => {
             break;
     }
 });
+
