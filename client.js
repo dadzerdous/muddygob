@@ -1,8 +1,34 @@
 //---------------------------------------------------------
-// CONNECT TO SERVER
+// CONNECT + INITIAL UI SETUP
 //---------------------------------------------------------
 const output = document.getElementById("output");
-const ws = new WebSocket("ws://192.168.0.186:9000");
+const input = document.getElementById("input");
+const status = document.getElementById("connection-status");
+
+const ws = new WebSocket("wss://muddygob-server-1.onrender.com");
+
+
+// Show initial message on welcome screen
+status.textContent = "Connecting...";
+
+
+//---------------------------------------------------------
+// CLEAN CONNECTION EVENTS
+//---------------------------------------------------------
+ws.onopen = () => {
+    status.textContent = "✓ Connected!";
+};
+
+ws.onerror = (err) => {
+    status.textContent = "⚠ Unable to connect to server";
+    addMessage(`<div style="color:red;">Error: ${err}</div>`);
+};
+
+ws.onclose = () => {
+    status.textContent = "✖ Connection closed";
+    addMessage(`<div style="color:red;">Connection closed.</div>`);
+};
+
 
 //---------------------------------------------------------
 // BASIC UI HELPERS
@@ -12,206 +38,106 @@ function addMessage(html) {
     output.scrollTop = output.scrollHeight;
 }
 
-function renderSystemMessage(msg) {
+function renderSystem(msg) {
     addMessage(`<div class="system-msg">${msg}</div>`);
 }
 
-function setBackground(imageName) {
-    document.body.style.backgroundImage = `url("images/${imageName}.jpg")`;
+function setBackground(name) {
+    document.body.style.backgroundImage = `url("images/${name}.jpg")`;
 }
 
+
 //---------------------------------------------------------
-// SEND INPUT TO SERVER
+// SEND INPUT
 //---------------------------------------------------------
 function sendToServer() {
-    const box = document.getElementById("input");
-    const text = box.value.trim();
+    const text = input.value.trim();
     if (text === "") return;
-
     ws.send(text);
-    box.value = "";
+    input.value = "";
 }
 
-// Hit Enter to send
-document.getElementById("input").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-        sendToServer();
-    }
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendToServer();
 });
 
-//---------------------------------------------------------
-// WEBSOCKET EVENTS
-//---------------------------------------------------------
-ws.onopen = () => {
-    renderSystemMessage("Connecting...");
-};
+document.getElementById("send").onclick = sendToServer;
 
-ws.onerror = (err) => {
-    addMessage(`<div style="color:red;">WebSocket Error: ${err}</div>`);
-};
-
-ws.onclose = () => {
-    addMessage(`<div style="color:red;">Connection closed.</div>`);
-};
 
 //---------------------------------------------------------
-// MESSAGE HANDLING
+// HANDLE MESSAGES (supports Blob + JSON)
 //---------------------------------------------------------
 ws.onmessage = (event) => {
+
     if (event.data instanceof Blob) {
         const reader = new FileReader();
-        reader.onload = () => handleServerMessage(reader.result);
+        reader.onload = () => handleMessage(reader.result);
         reader.readAsText(event.data, "UTF-8");
     } else {
-        handleServerMessage(event.data);
+        handleMessage(event.data);
     }
 };
 
+
 //---------------------------------------------------------
-// PARSE SERVER JSON
+// MAIN DISPATCHER
 //---------------------------------------------------------
-function handleServerMessage(raw) {
+function handleMessage(raw) {
     let data;
-    try {
-        data = JSON.parse(raw);
-    } catch (e) {
-        // Raw text fallback
-        addMessage(raw);
-        return;
-    }
+
+    try { data = JSON.parse(raw); }
+    catch { addMessage(raw); return; }
 
     switch (data.type) {
-        case "system":
-            renderSystemMessage(data.msg);
-            break;
-
-        case "title":
-            renderTitle(data);
-            break;
-
-        case "room":
-            renderRoom(data);
-            break;
-
-        case "death":
-            renderDeath(data);
-            break;
-
-        default:
-            console.log("Unknown packet:", data);
+        case "system": renderSystem(data.msg); break;
+        case "room": renderRoom(data); break;
+        case "death": renderDeath(data); break;
+        default: console.log("Unknown packet:", data);
     }
 }
 
-//---------------------------------------------------------
-// RENDER: TITLE SCREEN
-//---------------------------------------------------------
-function renderTitle(data) {
-    let html = `
-        <div class="title-screen">${data.text}</div>
-    `;
-    addMessage(html);
-}
 
 //---------------------------------------------------------
-// RENDER: ROOM
-//---------------------------------------------------------
-//---------------------------------------------------------
-// RENDER: ROOM
+// RENDER ROOM
 //---------------------------------------------------------
 function renderRoom(room) {
+
     let html = `
-        <div style="color:#b29eff; font-size:24px; margin-bottom:8px;">
-            <b>${room.title}</b>
-        </div>
-    `;
+    <div style="color:#b29eff;font-size:24px;margin-bottom:8px;">
+        <b>${room.title}</b>
+    </div>`;
 
-    if (room.background) setBackground(room.background);
-
-    // ---------- FIXED ARROW EXIT LAYOUT ----------
-//---------------------------------------------------------
-// RENDER: ROOM
-//---------------------------------------------------------
-function renderRoom(room) {
-    let html = `
-        <div style="color:#b29eff; font-size:24px; margin-bottom:8px;">
-            <b>${room.title}</b>
-        </div>
-    `;
-
-    if (room.background) setBackground(room.background);
-
-    // ---------- FIXED ARROW EXIT LAYOUT ----------
-    const fixedOrder = ["up", "down", "left", "right"];
-
-    function dirToArrow(dir) {
-        switch (dir) {
-            case "up": return "↑";
-            case "down": return "↓";
-            case "left": return "←";
-            case "right": return "→";
-        }
-        return "?";
-    }
+    const order = ["up", "down", "left", "right"];
+    const arrows = { up:"↑", down:"↓", left:"←", right:"→" };
 
     html += `<div class="exits-block"><b>Exits</b><br>`;
-
-    fixedOrder.forEach(dir => {
-        if (room.exits.includes(dir)) {
-            html += `
-                <div class="exit-option active-exit">
-                    ${dirToArrow(dir)} <span>${dir}</span>
-                </div>
-            `;
-        } else {
-            html += `
-                <div class="exit-option inactive-exit">
-                    ${dirToArrow(dir)} <span style="opacity:0.3">${dir}</span>
-                </div>
-            `;
-        }
+    order.forEach(dir => {
+        let active = room.exits.includes(dir);
+        html += `
+            <div class="exit-option ${active ? "active-exit" : "inactive-exit"}">
+                ${arrows[dir]} <span>${dir}</span>
+            </div>`;
     });
-
     html += `</div>`;
-    // ----------------------------------------------
 
-    // ROOM DESCRIPTION
     room.desc.forEach(line => {
-        html += `<p style="color:#eae6ff; margin:3px 0;">${line}</p>`;
+        html += `<p style="color:#eae6ff;margin:3px 0;">${line}</p>`;
     });
 
-    // PLAYERS
-    html += `
-        <div style="margin-top:10px; color:#aaffcc;">
-            <b>Players here:</b><br>
-            ${room.players.map(p => "• " + p).join("<br>")}
-        </div>
-    `;
+    html += `<div style="margin-top:10px;color:#aaffcc;">
+        <b>Players here:</b><br>
+        ${room.players.map(p => "• " + p).join("<br>")}
+    </div>`;
 
     addMessage(html);
 }
 
-    // ----------------------------------------------
-
-    // ROOM DESCRIPTION
-    room.desc.forEach(line => {
-        html += `<p style="color:#eae6ff; margin:3px 0;">${line}</p>`;
-    });
-
-    // PLAYERS
-    html += `
-        <div style="margin-top:10px; color:#aaffcc;">
-            <b>Players here:</b><br>
-            ${room.players.map(p => "• " + p).join("<br>")}
-        </div>
-    `;
-
-    addMessage(html);
-}
 
 //---------------------------------------------------------
-// RENDER: DEATH SCREEN
+// RENDER DEATH SCREEN
 //---------------------------------------------------------
 function renderDeath(data) {
+
     let html = `
         <div style="color:#ff6666; font-size:22px; margin-bottom:10px;">
             <b>${data.title}</b>
@@ -231,28 +157,41 @@ function renderDeath(data) {
     addMessage(html);
 }
 
+
 //---------------------------------------------------------
 // ARROW KEY MOVEMENT
 //---------------------------------------------------------
-document.addEventListener("keydown", (e) => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+document.addEventListener("keydown", e => {
+    if (ws.readyState !== WebSocket.OPEN) return;
 
     switch (e.key) {
-        case "ArrowUp":
-            ws.send("move up");
-            break;
-
-        case "ArrowDown":
-            ws.send("move down");
-            break;
-
-        case "ArrowLeft":
-            ws.send("move left");
-            break;
-
-        case "ArrowRight":
-            ws.send("move right");
-            break;
+        case "ArrowUp": ws.send("move up"); break;
+        case "ArrowDown": ws.send("move down"); break;
+        case "ArrowLeft": ws.send("move left"); break;
+        case "ArrowRight": ws.send("move right"); break;
     }
 });
 
+
+//---------------------------------------------------------
+// WELCOME SCREEN LOGIC
+//---------------------------------------------------------
+document.getElementById("welcome-screen").classList.remove("hidden");
+document.getElementById("output").style.display = "none";
+document.getElementById("input-bar").style.display = "none";
+
+function showGameUI() {
+    document.getElementById("welcome-screen").classList.add("hidden");
+    document.getElementById("output").style.display = "block";
+    document.getElementById("input-bar").style.display = "flex";
+}
+
+document.getElementById("btn-new").onclick = () => {
+    ws.send("newgame");
+    showGameUI();
+};
+
+document.getElementById("btn-login").onclick = () => {
+    ws.send("login");
+    showGameUI();
+};

@@ -75,3 +75,35 @@ body {
     cursor: pointer;
     font-weight: bold;
 }
+
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+#welcome-screen h1 {
+    font-size: 3rem;
+    letter-spacing: 8px;
+    margin-bottom: 20px;
+    color: #eee;
+}
+
+#welcome-screen button {
+    padding: 15px 40px;
+    margin: 10px;
+    font-size: 1.3rem;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
