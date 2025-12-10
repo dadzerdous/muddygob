@@ -1,14 +1,14 @@
 // ===============================================
-// client.js (Networking + Routing Only)
+// client.js  (Networking + Message Routing Only)
 // ===============================================
 
-import { showAuthModal, hideAuthUI, showRaceUI, showPronounUI } from "./ui.js";
+import { hideAuthUI } from "./ui.js";
 import { renderRoom, renderSystem } from "./render.js";
 
 let ws = null;
 
 // -------------------------------------------------
-// CONNECT
+// CONNECT WEBSOCKET
 // -------------------------------------------------
 export function initWebSocket(url) {
     ws = new WebSocket(url);
@@ -16,9 +16,17 @@ export function initWebSocket(url) {
     const statusEl = document.getElementById("connection-status");
     statusEl.textContent = "Connecting...";
 
-    ws.onopen = () => statusEl.textContent = "✓ Connected!";
-    ws.onerror = () => statusEl.textContent = "⚠ Connection error";
-    ws.onclose = () => statusEl.textContent = "✖ Disconnected";
+    ws.onopen = () => {
+        statusEl.textContent = "✓ Connected!";
+    };
+
+    ws.onerror = () => {
+        statusEl.textContent = "⚠ Connection error";
+    };
+
+    ws.onclose = () => {
+        statusEl.textContent = "✖ Disconnected";
+    };
 
     ws.onmessage = (event) => {
         const text = event.data;
@@ -42,63 +50,52 @@ export function sendText(txt) {
 }
 
 // -------------------------------------------------
-// PACKET ROUTING
+// ROUTE SERVER PACKETS
 // -------------------------------------------------
 function routeMessage(data) {
     switch (data.type) {
-
         case "system":
             renderSystem(data.msg);
             break;
 
         case "room":
-            hideAuthUI();                 // fully hide UI
-            document.getElementById("modal-overlay").classList.add("hidden");
+            hideAuthUI(); // we are now in-game
             renderRoom(data);
             break;
 
-        case "choose_race":
-            showRaceUI();
-            break;
-
-        case "choose_pronouns":
-            showPronounUI(data.allowed);
-            break;
-
         default:
-            console.warn("Unknown message:", data);
+            console.warn("Unknown message from server:", data);
     }
 }
 
 // -------------------------------------------------
-// EXPORTED ACTIONS
+// EXPORT for UI
 // -------------------------------------------------
-export function beginCreateAccount(name, pass) {
-    sendJSON({ type: "start_create" });
-    sendJSON({ type: "try_create", name });
-    sendJSON({ type: "try_create_pass", password: pass });
+export function beginCreateAccount(name, password, race, pronoun) {
+    sendJSON({
+        type: "create_account",
+        name,
+        password,
+        race,
+        pronoun
+    });
 }
 
-export function chooseRace(race) {
-    sendJSON({ type: "choose_race", race });
+export function attemptLogin(loginName, pass) {
+    // loginName is typically: name@race.pronoun
+    sendJSON({
+        type: "try_login",
+        login: loginName,
+        password: pass
+    });
 }
 
-export function choosePronoun(pronoun) {
-    sendJSON({ type: "choose_pronoun", pronoun });
-}
-
-export function attemptLogin(name, pass) {
-    sendJSON({ type: "try_login", name, password: pass });
-}
-
-// -------------------------------------------------
-// MOVEMENT KEYS
-// -------------------------------------------------
-document.addEventListener("keydown", e => {
+// Keyboard movement
+document.addEventListener("keydown", (e) => {
     switch (e.key) {
-        case "ArrowUp": sendText("move up"); break;
-        case "ArrowDown": sendText("move down"); break;
-        case "ArrowLeft": sendText("move left"); break;
+        case "ArrowUp":    sendText("move up"); break;
+        case "ArrowDown":  sendText("move down"); break;
+        case "ArrowLeft":  sendText("move left"); break;
         case "ArrowRight": sendText("move right"); break;
     }
 });
