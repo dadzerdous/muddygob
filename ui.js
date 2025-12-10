@@ -3,7 +3,6 @@
 // ===============================================
 
 import { beginCreateAccount, attemptLogin } from "./client.js";
-import { showHUD } from "./main.js";
 
 /* DOM ELEMENTS */
 const welcomeScreen  = document.getElementById("welcome-screen");
@@ -41,39 +40,42 @@ const RACE_PRONOUNS = {
    ============================================================ */
 export function showAuthModal(mode) {
     authMode = mode;
+
+    // reset UI text
     authError.textContent = "";
     usernameHint.textContent = "";
     passwordHint.textContent = "";
 
+    // reset values
     authUsername.value = "";
     authPassword.value = "";
 
     chosenRace = null;
     chosenPronoun = null;
 
+    // show the modal
     welcomeScreen.classList.add("hidden");
     modalOverlay.classList.remove("hidden");
     gameUI.classList.add("hidden");
 
-    if (mode === "create") {
-        setupCreateUI();
-    } else {
-        setupLoginUI();
-    }
+    // pick the correct mode
+    if (mode === "create") setupCreateUI();
+    else setupLoginUI();
 }
+
 
 export function hideAuthUI() {
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.add("hidden");
     gameUI.classList.remove("hidden");
 
-    // turn HUD on
-    showHUD();
+    // 🔹 Tell main.js to show HUD without circular imports
+    document.dispatchEvent(new Event("muddygob-auth-complete"));
 }
 
 
 /* ============================================================
-   CREATE MODE
+   CREATE MODE UI
    ============================================================ */
 function setupCreateUI() {
     authTitle.textContent = "Create a Being";
@@ -144,14 +146,14 @@ function goToCredentials() {
     authTitle.textContent = "Name This Being";
     authUsername.parentElement.style.display = "block";
     authPassword.parentElement.style.display = "block";
-
     btnAuthConfirm.style.display = "inline-block";
+
     authUsername.focus();
 }
 
 
 /* ============================================================
-   LOGIN MODE
+   LOGIN MODE UI
    ============================================================ */
 function setupLoginUI() {
     authTitle.textContent = "Login";
@@ -161,7 +163,6 @@ function setupLoginUI() {
 
     authUsername.parentElement.style.display = "block";
     authPassword.parentElement.style.display = "block";
-
     btnAuthConfirm.style.display = "inline-block";
 
     authUsername.placeholder = "Character name";
@@ -175,7 +176,7 @@ function showPronounOptions() {
 
 
 /* ============================================================
-   LIVE VALIDATION — NAME + PASSWORD
+   LIVE VALIDATION
    ============================================================ */
 authUsername.addEventListener("input", () => {
     let val = authUsername.value.trim();
@@ -215,6 +216,7 @@ authUsername.addEventListener("input", () => {
     usernameHint.textContent = "This being feels stable.";
 });
 
+
 authPassword.addEventListener("input", () => {
     const val = authPassword.value.trim();
 
@@ -242,7 +244,7 @@ btnAuthConfirm.onclick = () => {
     const name = authUsername.value.trim();
     const pass = authPassword.value.trim();
 
-    // CREATE
+    // CREATE MODE
     if (authMode === "create") {
         if (!chosenRace || !chosenPronoun) {
             authError.textContent = "Pick race and pronouns first.";
@@ -257,7 +259,7 @@ btnAuthConfirm.onclick = () => {
         return;
     }
 
-    // LOGIN
+    // LOGIN MODE
     if (!chosenRace || !chosenPronoun) {
         authError.textContent = "Select race + pronouns.";
         return;
