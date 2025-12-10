@@ -3,6 +3,8 @@
 // ===============================================
 
 import { showAuthModal, hideAuthUI, showRaceUI, showPronounUI } from "./ui.js";
+const modalOverlay = document.getElementById("modal-overlay");
+
 import { renderRoom, renderSystem } from "./render.js";
 
 let ws = null;
@@ -108,4 +110,5 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
+
 
