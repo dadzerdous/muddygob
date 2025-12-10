@@ -8,6 +8,10 @@ const statusEl = document.getElementById("connection-status");
 const welcomeScreen = document.getElementById("welcome-screen");
 const gameUI = document.getElementById("game-ui");
 
+const raceSelect = document.getElementById("race-select");
+const raceButtons = document.querySelectorAll(".race-btn");
+
+
 const modalOverlay = document.getElementById("modal-overlay");
 const authTitle = document.getElementById("auth-title");
 const authUsername = document.getElementById("auth-username");
@@ -117,9 +121,10 @@ function handleMessage(raw) {
             renderRoom(data);
             break;
 
-        case "choose_race":
-            renderSystem("Choose race: goblin, human, elf");
-            break;
+case "choose_race":
+    showRaceSelection();
+    break;
+
 
         case "choose_pronouns":
             renderSystem("Choose pronouns: he, she, they, it");
@@ -245,3 +250,17 @@ btnAuthConfirm.onclick = () => {
         }));
     }
 };
+
+function showRaceSelection() {
+    // Hide username/password area
+    authUsername.parentElement.style.display = "none";
+    authPassword.parentElement.style.display = "none";
+    btnAuthConfirm.style.display = "none";
+    btnAuthCancel.style.display = "none";
+    authError.textContent = "";
+
+    // Show race buttons
+    raceSelect.classList.remove("hidden");
+}
+
+
