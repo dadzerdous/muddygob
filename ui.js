@@ -41,10 +41,16 @@ export function showAuthModal(mode) {
 }
 
 export function hideAuthUI() {
-    modalOverlay.classList.add("hidden");
-    raceUI.classList.add("hidden");
-    pronounUI.classList.add("hidden");
+    // Only closes welcome screen + login form,
+    // but does NOT hide modal overlay if race/pronoun phases are active.
+    welcomeScreen.classList.add("hidden");
+
+    authUsername.parentElement.style.display = "none";
+    authPassword.parentElement.style.display = "none";
+    btnAuthConfirm.style.display = "none";
+    btnAuthCancel.style.display = "none";
 }
+
 
 
 // -----------------------------------------------
