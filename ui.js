@@ -1,18 +1,19 @@
 // ===============================================
-// ui.js (Authentication + Race/Pronoun UI)
+// ui.js (Auth + Race/Pronoun UI)
 // ===============================================
 
 import { beginCreateAccount, attemptLogin, chooseRace, choosePronoun } from "./client.js";
 
-// DOM elements
 const welcomeScreen = document.getElementById("welcome-screen");
 const modalOverlay = document.getElementById("modal-overlay");
-const authModal = document.getElementById("auth-modal");
 
 const authUsername = document.getElementById("auth-username");
 const authPassword = document.getElementById("auth-password");
-const authError = document.getElementById("auth-error");
 
+const usernameHint = document.getElementById("username-hint");
+const passwordHint = document.getElementById("password-hint");
+
+const authError = document.getElementById("auth-error");
 const btnAuthConfirm = document.getElementById("auth-confirm");
 const btnAuthCancel = document.getElementById("auth-cancel");
 
@@ -21,9 +22,8 @@ const pronounUI = document.getElementById("pronoun-select");
 
 let authMode = null;
 
-
 // -----------------------------------------------
-// PUBLIC
+// SHOW AUTH
 // -----------------------------------------------
 export function showAuthModal(mode) {
     authMode = mode;
@@ -33,39 +33,55 @@ export function showAuthModal(mode) {
 
     authUsername.value = "";
     authPassword.value = "";
-    authPassword.style.display = "block";
-    authUsername.parentElement.style.display = "block";
 
-    // auto-focus
+    usernameHint.textContent = "";
+    passwordHint.textContent = "";
+    authError.textContent = "";
+
+    authUsername.parentElement.style.display = "block";
+    authPassword.parentElement.style.display = "block";
+    btnAuthConfirm.style.display = "block";
+    btnAuthCancel.style.display = "block";
+
     authUsername.focus();
 }
 
 export function hideAuthUI() {
-    // Only closes welcome screen + login form,
-    // but does NOT hide modal overlay if race/pronoun phases are active.
-    welcomeScreen.classList.add("hidden");
-
-    authUsername.parentElement.style.display = "none";
-    authPassword.parentElement.style.display = "none";
-    btnAuthConfirm.style.display = "none";
-    btnAuthCancel.style.display = "none";
+    modalOverlay.classList.add("hidden");
+    raceUI.classList.add("hidden");
+    pronounUI.classList.add("hidden");
 }
 
+// -----------------------------------------------
+// LIVE VALIDATION
+// -----------------------------------------------
+authUsername.addEventListener("input", () => {
+    const v = authUsername.value;
+    if (v.length < 3) {
+        usernameHint.textContent = `Needs ${3 - v.length} more characters`;
+    } else {
+        usernameHint.textContent = "✓ Good";
+    }
+});
 
+authPassword.addEventListener("input", () => {
+    const v = authPassword.value;
+    if (v.length < 4) {
+        passwordHint.textContent = `Needs ${4 - v.length} more characters`;
+    } else {
+        passwordHint.textContent = "✓ Looks good";
+    }
+});
 
 // -----------------------------------------------
-// Authentication click
+// AUTH SUBMIT
 // -----------------------------------------------
 btnAuthConfirm.onclick = () => {
-    authError.textContent = "";
-
     const name = authUsername.value.trim();
     const pass = authPassword.value.trim();
 
-    if (!name || !pass) {
-        authError.textContent = "Missing fields.";
-        return;
-    }
+    if (name.length < 3) return authError.textContent = "Username too short.";
+    if (pass.length < 4) return authError.textContent = "Password too short.";
 
     if (authMode === "create") {
         beginCreateAccount(name, pass);
@@ -74,16 +90,12 @@ btnAuthConfirm.onclick = () => {
     }
 };
 
-btnAuthCancel.onclick = () => {
-    modalOverlay.classList.add("hidden");
-};
-
+btnAuthCancel.onclick = () => modalOverlay.classList.add("hidden");
 
 // -----------------------------------------------
-// RACE SELECTION UI
+// RACE UI
 // -----------------------------------------------
 export function showRaceUI() {
-    // hide fields
     authUsername.parentElement.style.display = "none";
     authPassword.parentElement.style.display = "none";
     btnAuthConfirm.style.display = "none";
@@ -99,17 +111,14 @@ document.querySelectorAll(".race-btn").forEach(btn => {
     };
 });
 
-
 // -----------------------------------------------
-// PRONOUN SELECTION UI
+// PRONOUN UI
 // -----------------------------------------------
 export function showPronounUI(allowed) {
     pronounUI.classList.remove("hidden");
 
     document.querySelectorAll(".pronoun-btn").forEach(btn => {
-        btn.style.display = allowed.includes(btn.dataset.pronoun)
-            ? "block"
-            : "none";
+        btn.style.display = allowed.includes(btn.dataset.pronoun) ? "block" : "none";
 
         btn.onclick = () => {
             choosePronoun(btn.dataset.pronoun);
