@@ -296,3 +296,26 @@ body {
         font-size: 14px;
     }
 }
+
+
+#race-select {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.race-btn {
+    padding: 12px;
+    font-size: 20px;
+    border: 2px solid #ccc;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border-radius: 8px;
+}
+
+.race-btn:hover {
+    background: rgba(255,255,255,0.1);
+    cursor: pointer;
+}
+
