@@ -1,1 +1,25 @@
 
+:root {
+    --bg-page: #050704;
+    --bg-panel: rgba(7, 12, 5, 0.85);
+    --bg-panel-strong: #111707;
+    --bg-input: #151c08;
+
+    --text-main: #f4f0c0;
+    --text-soft: #c7bf7a;
+    --text-muted: #8a8450;
+
+    --button-bg: #273314;
+    --button-bg-hover: #3a4a1b;
+    --button-text: #f4f0c0;
+
+    --accent-main: #6f8f2a;
+    --accent-soft: #9fbe3c;
+    --border-main: #6f8f2a;
+
+    --system-msg: #a3d977;
+    --error-color: #ff9d5c;
+
+    --exits-active: #f0dd80;
+    --exits-inactive: #4f5a33;
+}
