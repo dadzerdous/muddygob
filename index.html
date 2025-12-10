@@ -5,7 +5,6 @@
     <title>MuddyGob – Dark Fantasy MUD</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 <body>
 
@@ -33,19 +32,24 @@
         </div>
     </div>
 
-    <!-- Smoky modal overlay -->
+    <!-- Modal overlay -->
     <div id="modal-overlay" class="hidden">
         <div id="auth-modal">
+
             <h2 id="auth-title">Create Account</h2>
 
+            <!-- USERNAME -->
             <label class="auth-field">
                 <span>Username</span>
                 <input id="auth-username" type="text" autocomplete="off">
+                <div id="username-hint" class="auth-hint"></div>
             </label>
 
+            <!-- PASSWORD -->
             <label class="auth-field">
                 <span>Password</span>
                 <input id="auth-password" type="password" autocomplete="off">
+                <div id="password-hint" class="auth-hint"></div>
             </label>
 
             <p id="auth-error" class="auth-error"></p>
@@ -54,40 +58,25 @@
                 <button id="auth-confirm">Create</button>
                 <button id="auth-cancel">Cancel</button>
             </div>
-<!-- Race selection -->
-<div id="race-select" class="hidden">
-    <button class="race-btn" data-race="goblin">Goblin</button>
-    <button class="race-btn" data-race="human">Human</button>
-    <button class="race-btn" data-race="elf">Elf</button>
-</div>
 
-<!-- Pronoun selection -->
-<div id="pronoun-select" class="hidden">
-    <button class="pronoun-btn" data-pronoun="he">He/Him</button>
-    <button class="pronoun-btn" data-pronoun="she">She/Her</button>
-    <button class="pronoun-btn" data-pronoun="they">They/Them</button>
-    <button class="pronoun-btn" data-pronoun="it">It/Its</button>
-</div>
+            <!-- RACE SELECTION -->
+            <div id="race-select" class="hidden">
+                <button class="race-btn" data-race="goblin">Goblin</button>
+                <button class="race-btn" data-race="human">Human</button>
+                <button class="race-btn" data-race="elf">Elf</button>
+            </div>
 
-
+            <!-- PRONOUN SELECTION -->
+            <div id="pronoun-select" class="hidden">
+                <button class="pronoun-btn" data-pronoun="he">He/Him</button>
+                <button class="pronoun-btn" data-pronoun="she">She/Her</button>
+                <button class="pronoun-btn" data-pronoun="they">They/Them</button>
+                <button class="pronoun-btn" data-pronoun="it">It/Its</button>
+            </div>
 
         </div>
     </div>
 
-    </div>
-</div>
-
-<script type="module" src="main.js?v=3"></script>
+    <script type="module" src="main.js?v=3"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
