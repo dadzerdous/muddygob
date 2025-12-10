@@ -3,43 +3,39 @@
 // ===============================================
 
 import { initWebSocket, sendText } from "./client.js";
-import { showAuthModal, hideAuthUI } from "./ui.js";
+import { showAuthModal } from "./ui.js";
 
-// Input
-const input   = document.getElementById("input");
+// -------------------------------
+// In-Game Input
+// -------------------------------
+const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
+if (sendBtn && input) {
 sendBtn.onclick = () => {
-    const text = input.value.trim();
-    if (!text) return;
-    sendText(text);
-    input.value = "";
+const text = input.value.trim();
+if (!text) return;
+sendText(text);
+input.value = "";
 };
 
 input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendBtn.click();
 });
 
-// Show auth modal
-document.getElementById("btn-new").onclick   = () => showAuthModal("create");
-document.getElementById("btn-login").onclick = () => showAuthModal("login");
 
-// Expose HUD hook
-export function showHUD() {
-    const hud = document.getElementById("hud");
-    const conn = document.getElementById("connection-status");
-
-    if (hud) hud.classList.remove("hidden");
-    if (conn) conn.style.display = "none";
 }
 
-document.addEventListener("muddygob-auth-complete", () => {
-    const hud = document.getElementById("hud");
-    const conn = document.getElementById("connection-status");
+// -------------------------------
+// Welcome Screen Buttons
+// -------------------------------
+const btnNew = document.getElementById("btn-new");
+const btnLogin = document.getElementById("btn-login");
 
-    if (hud) hud.classList.remove("hidden");
-    if (conn) conn.style.display = "none";
-});
+if (btnNew) btnNew.onclick = () => showAuthModal("create");
+if (btnLogin) btnLogin.onclick = () => showAuthModal("login");
 
-// Connect to server
+// -------------------------------
+// WebSocket Connect
+// -------------------------------
 initWebSocket("wss://muddygob-server-1.onrender.com");
