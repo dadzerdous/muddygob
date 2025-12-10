@@ -1,16 +1,14 @@
 // ===============================================
-// client.js  (Networking + Message Routing Only)
+// client.js (Networking + Routing Only)
 // ===============================================
 
 import { showAuthModal, hideAuthUI, showRaceUI, showPronounUI } from "./ui.js";
-const modalOverlay = document.getElementById("modal-overlay");
-
 import { renderRoom, renderSystem } from "./render.js";
 
 let ws = null;
 
 // -------------------------------------------------
-// CONNECT WEBSOCKET
+// CONNECT
 // -------------------------------------------------
 export function initWebSocket(url) {
     ws = new WebSocket(url);
@@ -44,7 +42,7 @@ export function sendText(txt) {
 }
 
 // -------------------------------------------------
-// ROUTE SERVER PACKETS
+// PACKET ROUTING
 // -------------------------------------------------
 function routeMessage(data) {
     switch (data.type) {
@@ -53,19 +51,11 @@ function routeMessage(data) {
             renderSystem(data.msg);
             break;
 
-case "room":
-    // Only hide auth UI if we are DONE creating/logging in
-    if (!document.getElementById("race-select").classList.contains("hidden") ||
-        !document.getElementById("pronoun-select").classList.contains("hidden")) {
-        // still creating character → do nothing
-    } else {
-        hideAuthUI();
-        modalOverlay.classList.add("hidden");
-    }
-
-    renderRoom(data);
-    break;
-
+        case "room":
+            hideAuthUI();                 // fully hide UI
+            document.getElementById("modal-overlay").classList.add("hidden");
+            renderRoom(data);
+            break;
 
         case "choose_race":
             showRaceUI();
@@ -81,7 +71,7 @@ case "room":
 }
 
 // -------------------------------------------------
-// EXPORT for UI
+// EXPORTED ACTIONS
 // -------------------------------------------------
 export function beginCreateAccount(name, pass) {
     sendJSON({ type: "start_create" });
@@ -93,15 +83,17 @@ export function chooseRace(race) {
     sendJSON({ type: "choose_race", race });
 }
 
-export function choosePronoun(p) {
-    sendJSON({ type: "choose_pronoun", pronoun: p });
+export function choosePronoun(pronoun) {
+    sendJSON({ type: "choose_pronoun", pronoun });
 }
 
 export function attemptLogin(name, pass) {
     sendJSON({ type: "try_login", name, password: pass });
 }
 
-// Keyboard movement
+// -------------------------------------------------
+// MOVEMENT KEYS
+// -------------------------------------------------
 document.addEventListener("keydown", e => {
     switch (e.key) {
         case "ArrowUp": sendText("move up"); break;
@@ -110,5 +102,3 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
-
-
