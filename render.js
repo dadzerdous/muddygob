@@ -1,16 +1,15 @@
 // ===============================================
-// render.js – Room + System Output Rendering
+// render.js (Room + System Output Rendering)
 // ===============================================
 
 export function renderSystem(msg) {
     const output = document.getElementById("output");
-
     if (output) {
         output.innerHTML += `<div class="system-msg">${msg}</div><br>`;
         output.scrollTop = output.scrollHeight;
     }
 
-    // Mirror into auth modal (if open)
+    // Mirror into auth modal if it's open
     const modalOverlay = document.getElementById("modal-overlay");
     const authError = document.getElementById("auth-error");
 
@@ -30,7 +29,7 @@ export function renderRoom(room) {
     let html = `
         <div class="room-title">${room.title}</div>
         <div class="room-desc">
-            ${(room.desc || []).map(line => `<p>${line}</p>`).join("")}
+            ${(room.desc || []).map(l => `<p>${l}</p>`).join("")}
         </div>
         <div class="room-exits">
             <b>Exits:</b>
@@ -41,7 +40,6 @@ export function renderRoom(room) {
     output.innerHTML += html + "<br>";
     output.scrollTop = output.scrollHeight;
 
-    // Background image support
     if (room.background) {
         document.body.style.backgroundImage = `url('images/${room.background}.jpg')`;
     }
