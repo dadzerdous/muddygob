@@ -11,6 +11,14 @@ const gameUI = document.getElementById("game-ui");
 const raceSelect = document.getElementById("race-select");
 const raceButtons = document.querySelectorAll(".race-btn");
 
+const raceSelect = document.getElementById("race-select");
+const raceButtons = document.querySelectorAll(".race-btn");
+
+const pronounSelect = document.getElementById("pronoun-select");
+const pronounButtons = document.querySelectorAll(".pronoun-btn");
+
+let selectedRace = null;
+
 
 const modalOverlay = document.getElementById("modal-overlay");
 const authTitle = document.getElementById("auth-title");
@@ -123,6 +131,10 @@ function handleMessage(raw) {
 
 case "choose_race":
     showRaceSelection();
+    break;
+
+            case "choose_pronouns":
+    showPronounSelection(data.allowed);
     break;
 
 
@@ -253,6 +265,18 @@ btnAuthConfirm.onclick = () => {
 
 function showRaceSelection() {
     // Hide username/password area
+    authUsername.parentElement.style.display = "none";
+    authPassword.parentElement.style.display = "none";
+    btnAuthConfirm.style.display = "none";
+    btnAuthCancel.style.display = "none";
+    authError.textContent = "";
+
+    // Show race buttons
+    raceSelect.classList.remove("hidden");
+}
+
+function showRaceSelection() {
+    // Hide fields
     authUsername.parentElement.style.display = "none";
     authPassword.parentElement.style.display = "none";
     btnAuthConfirm.style.display = "none";
