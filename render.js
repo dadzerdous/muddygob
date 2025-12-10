@@ -4,27 +4,43 @@
 
 export function renderSystem(msg) {
     const output = document.getElementById("output");
-    output.innerHTML += `<div class="system-msg">${msg}</div><br>`;
-    output.scrollTop = output.scrollHeight;
+    if (output) {
+        output.innerHTML += `<div class="system-msg">${msg}</div><br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+
+    // If auth modal is open, mirror system messages into the error line
+    const modalOverlay = document.getElementById("modal-overlay");
+    const authError = document.getElementById("auth-error");
+
+    if (
+        modalOverlay &&
+        !modalOverlay.classList.contains("hidden") &&
+        authError
+    ) {
+        authError.textContent = msg;
+    }
 }
 
 export function renderRoom(room) {
     const output = document.getElementById("output");
+    if (!output) return;
 
     let html = `
         <div class="room-title">${room.title}</div>
         <div class="room-desc">
-            ${room.desc.map(l => `<p>${l}</p>`).join("")}
+            ${(room.desc || []).map(l => `<p>${l}</p>`).join("")}
         </div>
         <div class="room-exits">
             <b>Exits:</b>
-            ${room.exits.map(e => `<span class="exit">${e}</span>`).join(", ")}
+            ${(room.exits || []).map(e => `<span class="exit">${e}</span>`).join(", ")}
         </div>
     `;
 
     output.innerHTML += html + "<br>";
     output.scrollTop = output.scrollHeight;
 
-    if (room.background)
+    if (room.background) {
         document.body.style.backgroundImage = `url('images/${room.background}.jpg')`;
+    }
 }
