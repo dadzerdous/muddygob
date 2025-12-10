@@ -12,18 +12,16 @@ const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
 if (sendBtn && input) {
-sendBtn.onclick = () => {
-const text = input.value.trim();
-if (!text) return;
-sendText(text);
-input.value = "";
-};
+    sendBtn.onclick = () => {
+        const text = input.value.trim();
+        if (!text) return;
+        sendText(text);
+        input.value = "";
+    };
 
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendBtn.click();
-});
-
-
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+    });
 }
 
 // -------------------------------
