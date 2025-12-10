@@ -136,6 +136,9 @@ function showLoginFields() {
 authUsername.addEventListener("input", () => {
     usernameHint.style.color = "#ccc";
     const val = authUsername.value.trim();
+        authUsername.value = 
+        authUsername.value.charAt(0).toUpperCase() +
+        authUsername.value.slice(1).toLowerCase();
 
     if (authMode === "login") {
         // For login, just hint the format
