@@ -288,3 +288,39 @@ function showRaceSelection() {
 }
 
 
+raceButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        selectedRace = btn.dataset.race;
+
+        // Tell server which race was chosen
+        ws.send(JSON.stringify({
+            type: "choose_race",
+            race: selectedRace
+        }));
+
+        raceSelect.classList.add("hidden");
+    });
+});
+
+function showPronounSelection(allowedList) {
+    pronounSelect.classList.remove("hidden");
+
+    pronounButtons.forEach(btn => {
+        const p = btn.dataset.pronoun;
+        btn.style.display = allowedList.includes(p) ? "block" : "none";
+    });
+}
+
+pronounButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const chosen = btn.dataset.pronoun;
+
+        ws.send(JSON.stringify({
+            type: "choose_pronoun",
+            pronoun: chosen
+        }));
+
+        pronounSelect.classList.add("hidden");
+    });
+});
+
