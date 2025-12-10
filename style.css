@@ -353,6 +353,64 @@ button {
     margin-bottom: 10px;
     cursor: pointer;
 }
+/* ===============================
+   BASE MOBILE FRIENDLY UI
+   =============================== */
+body {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Make text larger on mobile */
+#output {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+/* Make the input box large enough for mobile thumbs */
+#input {
+    font-size: 18px;
+    padding: 12px;
+}
+
+/* Buttons look the same everywhere */
+button,
+.race-btn,
+.pronoun-btn {
+    font-size: 20px;
+    padding: 14px 16px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* ===============================
+   MOBILE BOOST
+   (applies when screen is < 600px)
+   =============================== */
+@media (max-width: 600px) {
+
+    h1 {
+        font-size: 32px;
+    }
+
+    #output {
+        font-size: 20px;
+    }
+
+    button,
+    .race-btn,
+    .pronoun-btn {
+        font-size: 22px;
+        padding: 18px 20px;
+    }
+
+    #auth-modal {
+        width: 85%;
+        padding: 20px;
+    }
+}
+
 
 
 
