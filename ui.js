@@ -159,16 +159,6 @@ authUsername.addEventListener("input", () => {
         authUsername.value.charAt(0).toUpperCase() +
         authUsername.value.slice(1).toLowerCase();
 
-    if (authMode === "login") {
-        // For login, just hint the format
-        if (!val.includes("@")) {
-            usernameHint.textContent = "Tip: use name@race.pronoun (e.g. kimy@goblin.they)";
-        } else {
-            usernameHint.textContent = "";
-        }
-        return;
-    }
-
     // Create mode – validate base name (we'll send race/pronoun separately)
     if (val.length === 0) {
         usernameHint.textContent = "Name must be at least 4 letters.";
