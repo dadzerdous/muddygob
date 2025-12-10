@@ -426,5 +426,60 @@ button,
 }
 
 
+.char-sheet {
+    background: rgba(15, 10, 5, 0.85);
+    border: 2px solid #d6c69a;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    margin: auto;
+    box-shadow: 0 0 40px rgba(0,0,0,0.7);
+    font-family: "Georgia", serif;
+    color: #f0e7c0;
+}
+
+.char-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.char-row span {
+    width: 30%;
+    font-size: 1rem;
+}
+
+.char-row input {
+    flex: 1;
+    padding: 6px 8px;
+    background: #30271c;
+    color: #f0e7c0;
+    border: 1px solid #8c7d5a;
+    border-radius: 6px;
+}
+
+.char-choice {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.char-choice button {
+    flex: 1;
+    padding: 6px;
+    background: #40331f;
+    border: 1px solid #bba57a;
+    border-radius: 6px;
+    color: #f0e7c0;
+}
+
+.char-choice button:hover {
+    background: #5a4428;
+    cursor: pointer;
+}
+
 
 
