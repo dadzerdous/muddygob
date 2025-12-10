@@ -23,6 +23,11 @@ body {
     overflow-y: visible !important;
 }
 
+.hidden {
+    display: none !important;
+}
+
+
 
 /* =====================================================
    🔹 ADDED — Minimal Emoji HUD (Level / XP / Stamina)
@@ -248,3 +253,4 @@ body {
 }
 
 /* ... (everything below this remains unchanged) ... */
+
