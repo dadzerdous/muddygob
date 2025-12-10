@@ -24,6 +24,12 @@ if (sendBtn && input) {
     });
 }
 
+export function setTheme(name) {
+    const theme = document.getElementById("theme-style");
+    theme.href = `themes/${name}.css`;
+}
+
+
 // -------------------------------
 // Welcome Screen Buttons
 // -------------------------------
