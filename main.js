@@ -6,15 +6,15 @@
 import { initWebSocket, sendText } from "./client.js";
 import { showAuthModal } from "./ui.js";
 
-// --- Hook up the welcome screen buttons ---
-const btnNew = document.getElementById("btn-new");
+// Welcome screen buttons
+const btnNew   = document.getElementById("btn-new");
 const btnLogin = document.getElementById("btn-login");
 
-btnNew.onclick = () => showAuthModal("create");
+btnNew.onclick   = () => showAuthModal("create");
 btnLogin.onclick = () => showAuthModal("login");
 
-// --- Hook up the input + Send button for in-game commands ---
-const input = document.getElementById("input");
+// In-game input
+const input   = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
 sendBtn.onclick = () => {
@@ -30,5 +30,5 @@ input.addEventListener("keypress", (e) => {
     }
 });
 
-// --- Connect to your Render server ---
+// Connect to your Render server
 initWebSocket("wss://muddygob-server-1.onrender.com");
