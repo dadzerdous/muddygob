@@ -14,9 +14,6 @@ const raceButtons = document.querySelectorAll(".race-btn");
 const pronounSelect = document.getElementById("pronoun-select");
 const pronounButtons = document.querySelectorAll(".pronoun-btn");
 
-let selectedRace = null;
-
-
 const modalOverlay = document.getElementById("modal-overlay");
 const authTitle = document.getElementById("auth-title");
 const authUsername = document.getElementById("auth-username");
@@ -29,10 +26,12 @@ const btnNew = document.getElementById("btn-new");
 const btnLogin = document.getElementById("btn-login");
 const btnSend = document.getElementById("send");
 
-let authMode = null; // "create" or "login"
+let authMode = null;  // create or login
 let ws;
 
-// Use your Render URL
+//---------------------------------------------------------
+// CONNECT TO SERVER
+//---------------------------------------------------------
 initWebSocket("wss://muddygob-server-1.onrender.com");
 
 function initWebSocket(url) {
@@ -45,14 +44,12 @@ function initWebSocket(url) {
     };
 
     ws.onerror = (err) => {
-        console.error("WebSocket error:", err);
-        statusEl.textContent = "⚠ Unable to connect to server";
-        addMessage(`<div style="color:red;">Error: ${err}</div>`);
+        statusEl.textContent = "⚠ Unable to connect";
+        console.error(err);
     };
 
     ws.onclose = () => {
         statusEl.textContent = "✖ Connection closed";
-        addMessage(`<div style="color:red;">Connection closed.</div>`);
     };
 
     ws.onmessage = (event) => {
@@ -82,41 +79,20 @@ function renderSystem(msg) {
 }
 
 function setBackground(name) {
-    if (!name) return;
-    document.body.style.backgroundImage = `url("images/${name}.jpg")`;
+    if (name)
+        document.body.style.backgroundImage = `url('images/${name}.jpg')`;
 }
-
-//---------------------------------------------------------
-// SEND INPUT (in-game text)
-//---------------------------------------------------------
-function sendToServer() {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    const text = input.value.trim();
-    if (text === "") return;
-    ws.send(text);
-    input.value = "";
-}
-
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendToServer();
-});
-
-btnSend.onclick = sendToServer;
 
 //---------------------------------------------------------
 // MESSAGE DISPATCHER
 //---------------------------------------------------------
 function handleMessage(raw) {
     let data;
-
-    try {
-        data = JSON.parse(raw);
-    } catch {
-        addMessage(raw);
-        return;
-    }
+    try { data = JSON.parse(raw); }
+    catch { return addMessage(raw); }
 
     switch (data.type) {
+
         case "system":
             renderSystem(data.msg);
             break;
@@ -126,17 +102,12 @@ function handleMessage(raw) {
             renderRoom(data);
             break;
 
-case "choose_race":
-    showRaceSelection();
-    break;
-
-            case "choose_pronouns":
-    showPronounSelection(data.allowed);
-    break;
-
+        case "choose_race":
+            showRaceSelection();
+            break;
 
         case "choose_pronouns":
-            renderSystem("Choose pronouns: he, she, they, it");
+            showPronounSelection(data.allowed);
             break;
 
         default:
@@ -151,16 +122,17 @@ function renderRoom(room) {
     let html = `
         <div style="color:#b29eff;font-size:24px;margin-bottom:8px;">
             <b>${room.title}</b>
-        </div>`;
+        </div>
+    `;
 
     if (room.background) setBackground(room.background);
 
-    const order = ["up", "down", "left", "right"];
+    const order = ["up","down","left","right"];
     const arrows = { up:"↑", down:"↓", left:"←", right:"→" };
 
     html += `<div class="exits-block"><b>Exits</b><br>`;
     order.forEach(dir => {
-        const active = room.exits && room.exits.includes(dir);
+        const active = room.exits.includes(dir);
         html += `
             <div class="exit-option ${active ? "active-exit" : "inactive-exit"}">
                 ${arrows[dir]} <span>${dir}</span>
@@ -168,33 +140,63 @@ function renderRoom(room) {
     });
     html += `</div>`;
 
-    (room.desc || []).forEach(line => {
+    room.desc.forEach(line => {
         html += `<p style="color:#eae6ff;margin:3px 0;">${line}</p>`;
     });
 
     html += `<div style="margin-top:10px;color:#aaffcc;">
         <b>Players here:</b><br>
-        ${(room.players || []).map(p => "• " + p).join("<br>") || "• (just you)"}
+        ${(room.players || []).length > 0
+            ? room.players.map(p => "• " + p).join("<br>")
+            : "• (just you)"}
     </div>`;
 
     addMessage(html);
 }
 
 //---------------------------------------------------------
-// WELCOME + AUTH MODAL LOGIC
+// INPUT BAR SEND
+//---------------------------------------------------------
+function sendToServer() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    const text = input.value.trim();
+    if (text === "") return;
+
+    ws.send(text);
+    input.value = "";
+}
+
+btnSend.onclick = sendToServer;
+input.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendToServer();
+});
+
+//---------------------------------------------------------
+// MOVEMENT (ARROW KEYS)
+//---------------------------------------------------------
+document.addEventListener("keydown", e => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+    switch (e.key) {
+        case "ArrowUp": ws.send("move up"); break;
+        case "ArrowDown": ws.send("move down"); break;
+        case "ArrowLeft": ws.send("move left"); break;
+        case "ArrowRight": ws.send("move right"); break;
+    }
+});
+
+//---------------------------------------------------------
+// AUTH UI
 //---------------------------------------------------------
 function hideWelcomeAndModal() {
     welcomeScreen.classList.add("hidden");
     modalOverlay.classList.add("hidden");
     gameUI.classList.remove("hidden");
-
-    authError.textContent = "";
-    authUsername.value = "";
-    authPassword.value = "";
 }
 
 function showAuthModal(mode) {
     authMode = mode;
+
     authError.textContent = "";
     authUsername.value = "";
     authPassword.value = "";
@@ -206,18 +208,12 @@ function showAuthModal(mode) {
     authUsername.focus();
 }
 
-// Initial UI state
-welcomeScreen.classList.remove("hidden");
-gameUI.classList.add("hidden");
-modalOverlay.classList.add("hidden");
-
-// Button hookups
 btnNew.onclick = () => showAuthModal("create");
 btnLogin.onclick = () => showAuthModal("login");
 btnAuthCancel.onclick = () => modalOverlay.classList.add("hidden");
 
 //---------------------------------------------------------
-// CONFIRM (CREATE or LOGIN)
+// CREATE or LOGIN SUBMIT
 //---------------------------------------------------------
 btnAuthConfirm.onclick = () => {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -234,24 +230,16 @@ btnAuthConfirm.onclick = () => {
     }
 
     if (authMode === "create") {
-        // Step 1: start creation
+
         ws.send(JSON.stringify({ type: "start_create" }));
         ws.send(JSON.stringify({ type: "try_create", name }));
         ws.send(JSON.stringify({ type: "try_create_pass", password: pass }));
 
-        // Ask race
-        let race = prompt("Race (goblin, human, elf):", "goblin");
-        if (!race) return authError.textContent = "No race chosen.";
-        race = race.toLowerCase().trim();
-        ws.send(JSON.stringify({ type: "choose_race", race }));
+        // Username/password hidden → race screen appears automatically
+        authError.textContent = "Choose your race...";
+    }
 
-        // Ask pronouns
-        let pronoun = prompt("Pronouns (he, she, they, it):", "they");
-        if (!pronoun) return authError.textContent = "No pronouns chosen.";
-        pronoun = pronoun.toLowerCase().trim();
-        ws.send(JSON.stringify({ type: "choose_pronoun", pronoun }));
-
-    } else if (authMode === "login") {
+    else if (authMode === "login") {
         ws.send(JSON.stringify({
             type: "try_login",
             name,
@@ -260,56 +248,48 @@ btnAuthConfirm.onclick = () => {
     }
 };
 
+//---------------------------------------------------------
+// RACE SELECTION
+//---------------------------------------------------------
 function showRaceSelection() {
-    // Hide username/password area
+    // Hide username/password
     authUsername.parentElement.style.display = "none";
     authPassword.parentElement.style.display = "none";
     btnAuthConfirm.style.display = "none";
     btnAuthCancel.style.display = "none";
     authError.textContent = "";
 
-    // Show race buttons
     raceSelect.classList.remove("hidden");
 }
-
-function showRaceSelection() {
-    // Hide fields
-    authUsername.parentElement.style.display = "none";
-    authPassword.parentElement.style.display = "none";
-    btnAuthConfirm.style.display = "none";
-    btnAuthCancel.style.display = "none";
-    authError.textContent = "";
-
-    // Show race buttons
-    raceSelect.classList.remove("hidden");
-}
-
 
 raceButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        selectedRace = btn.dataset.race;
+    btn.onclick = () => {
+        const race = btn.dataset.race;
 
-        // Tell server which race was chosen
         ws.send(JSON.stringify({
             type: "choose_race",
-            race: selectedRace
+            race
         }));
 
         raceSelect.classList.add("hidden");
-    });
+        authError.textContent = "Choose your pronouns...";
+    };
 });
 
+//---------------------------------------------------------
+// PRONOUN SELECTION
+//---------------------------------------------------------
 function showPronounSelection(allowedList) {
-    pronounSelect.classList.remove("hidden");
-
     pronounButtons.forEach(btn => {
         const p = btn.dataset.pronoun;
         btn.style.display = allowedList.includes(p) ? "block" : "none";
     });
+
+    pronounSelect.classList.remove("hidden");
 }
 
 pronounButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.onclick = () => {
         const chosen = btn.dataset.pronoun;
 
         ws.send(JSON.stringify({
@@ -318,7 +298,5 @@ pronounButtons.forEach(btn => {
         }));
 
         pronounSelect.classList.add("hidden");
-    });
+    };
 });
-
-
