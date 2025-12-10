@@ -33,5 +33,13 @@ export function showHUD() {
     if (conn) conn.style.display = "none";
 }
 
+document.addEventListener("muddygob-auth-complete", () => {
+    const hud = document.getElementById("hud");
+    const conn = document.getElementById("connection-status");
+
+    if (hud) hud.classList.remove("hidden");
+    if (conn) conn.style.display = "none";
+});
+
 // Connect to server
 initWebSocket("wss://muddygob-server-1.onrender.com");
