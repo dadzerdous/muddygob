@@ -4,6 +4,9 @@
 
 import { beginCreateAccount, attemptLogin } from "./client.js";
 
+// 🔹 ADDED — bring in HUD activation
+import { showHUD } from "./main.js";
+
 const welcomeScreen  = document.getElementById("welcome-screen");
 const modalOverlay   = document.getElementById("modal-overlay");
 const gameUI         = document.getElementById("game-ui");
@@ -62,6 +65,9 @@ export function hideAuthUI() {
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.add("hidden");
     gameUI.classList.remove("hidden");
+
+    // 🔹 ADDED — turn on HUD when entering the game
+    showHUD();
 }
 
 // ================================
@@ -160,7 +166,7 @@ function showPronounOptions() {
 }
 
 // ================================
-// LIVE VALIDATION
+// LIVE VALIDATION (unchanged)
 // ================================
 authUsername.addEventListener("input", () => {
     let val = authUsername.value.trim();
@@ -169,11 +175,9 @@ authUsername.addEventListener("input", () => {
         usernameHint.textContent = chosenRace && chosenPronoun
             ? `Logging in as ${val}@${chosenRace}.${chosenPronoun}`
             : "Choose race + pronoun.";
-
         return;
     }
 
-    // Auto-format create names
     authUsername.value =
         val.charAt(0).toUpperCase() +
         val.slice(1).toLowerCase();
