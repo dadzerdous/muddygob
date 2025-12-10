@@ -23,6 +23,7 @@ export function renderSystem(msg) {
 }
 
 export function renderRoom(room) {
+    renderRoom()
     const output = document.getElementById("output");
     if (!output) return;
 
