@@ -16,6 +16,14 @@ body {
     background-position: center;
 }
 
+#auth-modal {
+    overflow-y: visible !important;
+}
+#auth-modal {
+    overflow-y: visible !important;
+}
+
+
 /* Connection status at top */
 .connection-status {
     margin: 8px 0 0 0;
@@ -410,6 +418,7 @@ button,
         padding: 20px;
     }
 }
+
 
 
 
