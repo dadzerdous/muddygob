@@ -146,6 +146,15 @@ function showLoginFields() {
 authUsername.addEventListener("input", () => {
     usernameHint.style.color = "#ccc";
     const val = authUsername.value.trim();
+
+    // Do NOT auto modify during login
+    if (authMode === "login") {
+        usernameHint.textContent = chosenRace && chosenPronoun
+            ? `Logging in as ${val}@${chosenRace}.${chosenPronoun}`
+            : "Enter name, then choose race + pronoun.";
+
+        return;
+    }
         authUsername.value = 
         authUsername.value.charAt(0).toUpperCase() +
         authUsername.value.slice(1).toLowerCase();
