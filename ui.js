@@ -244,7 +244,20 @@ btnAuthConfirm.onclick = () => {
             authError.textContent = "Please enter both login name and password.";
             return;
         }
-        attemptLogin(name, pass);
+        if (!chosenRace || !chosenPronoun) {
+    authError.textContent = "Select both race and pronoun first.";
+    return;
+}
+
+const loginId =
+    name.toLowerCase() +
+    "@" +
+    chosenRace.toLowerCase() +
+    "." +
+    chosenPronoun.toLowerCase();
+
+attemptLogin(loginId, pass);
+
     }
 };
 
@@ -275,9 +288,22 @@ btnAuthCancel.onclick = () => {
 document.querySelectorAll(".race-btn").forEach(btn => {
     btn.onclick = () => {
         chosenRace = btn.dataset.race;
-        goToPronounStep();
+
+        if (authMode === "login") {
+            // show pronoun choices for login
+            pronounUI.classList.remove("hidden");
+
+            const allowed = RACE_PRONOUNS[chosenRace] || [];
+            document.querySelectorAll(".pronoun-btn").forEach(p => {
+                p.style.display = allowed.includes(p.dataset.pronoun) ? "block" : "none";
+            });
+        } else {
+            // creation flow
+            goToPronounStep();
+        }
     };
 });
+
 
 // -----------------------------------------------
 // PRONOUN SELECTION UI
@@ -285,6 +311,13 @@ document.querySelectorAll(".race-btn").forEach(btn => {
 document.querySelectorAll(".pronoun-btn").forEach(btn => {
     btn.onclick = () => {
         chosenPronoun = btn.dataset.pronoun;
-        goToCredentialStep();
+
+        if (authMode === "login") {
+            // nothing special — just let them enter password
+            authPassword.focus();
+        } else {
+            goToCredentialStep();
+        }
     };
 });
+
