@@ -340,5 +340,19 @@ body {
     cursor: pointer;
 }
 
+.race-btn,
+.pronoun-btn,
+button {
+    background: rgba(80, 60, 120, 0.6);
+    border: 2px solid #b29eff;
+    color: #eae6ff;
+    padding: 12px;
+    width: 100%;
+    font-size: 22px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
 
 
