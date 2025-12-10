@@ -1,1 +1,25 @@
 
+:root {
+    --bg-page: #000000;
+    --bg-panel: rgba(0, 0, 0, 0.55);
+    --bg-panel-strong: #1a1333;
+    --bg-input: #120c24;
+
+    --text-main: #e0d6ff;
+    --text-soft: #cbbcff;
+    --text-muted: #aaaaaa;
+
+    --button-bg: #2f244d;
+    --button-bg-hover: #463375;
+    --button-text: #f5edff;
+
+    --accent-main: #8d74ff;
+    --accent-soft: #a998ff;
+    --border-main: #8d74ff;
+
+    --system-msg: #9ad1ff;
+    --error-color: #ff9d9d;
+
+    --exits-active: #ffdda0;
+    --exits-inactive: #555555;
+}
