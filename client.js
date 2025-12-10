@@ -51,10 +51,19 @@ function routeMessage(data) {
             renderSystem(data.msg);
             break;
 
-        case "room":
-            hideAuthUI();
-            renderRoom(data);
-            break;
+case "room":
+    // Only hide auth UI if we are DONE creating/logging in
+    if (!document.getElementById("race-select").classList.contains("hidden") ||
+        !document.getElementById("pronoun-select").classList.contains("hidden")) {
+        // still creating character → do nothing
+    } else {
+        hideAuthUI();
+        modalOverlay.classList.add("hidden");
+    }
+
+    renderRoom(data);
+    break;
+
 
         case "choose_race":
             showRaceUI();
@@ -99,3 +108,4 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
+
