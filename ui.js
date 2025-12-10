@@ -115,20 +115,30 @@ function goToCredentialStep() {
 // -----------------------------------------------
 function showLoginFields() {
     createStep = null;
-    chosenRace = null;
-    chosenPronoun = null;
 
+    // Clear previous UI states
     raceUI.classList.add("hidden");
     pronounUI.classList.add("hidden");
 
+    // Show username + password again
     authUsername.parentElement.style.display = "block";
     authPassword.parentElement.style.display = "block";
     btnAuthConfirm.style.display = "inline-block";
 
     authTitle.textContent = "Login";
-    authUsername.placeholder = "name@race.pronoun";
-    authUsername.focus();
+
+    // --- NEW: add specialized placeholders ---
+    authUsername.placeholder = "Character name (Kimy)";
+    usernameHint.textContent = "Select race + pronoun below.";
+
+    // --- NEW: show race dropdown ---
+    raceUI.classList.remove("hidden");
+    pronounUI.classList.add("hidden"); // pronouns only after race
+
+    chosenRace = null;
+    chosenPronoun = null;
 }
+
 
 // -----------------------------------------------
 // LIVE VALIDATION
