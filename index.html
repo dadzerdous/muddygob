@@ -14,7 +14,7 @@
     <!-- Welcome screen -->
     <div id="welcome-screen" class="screen">
         <h1>M U D D Y G O B</h1>
-        <p>A dark fantasy multiplayer story v0.0.05</p>
+        <p>A dark fantasy multiplayer story v0.0.3</p>
 
         <div class="welcome-buttons">
             <button id="btn-new">New</button>
@@ -34,52 +34,52 @@
 
     <!-- Modal overlay -->
     <div id="modal-overlay" class="hidden">
-        <div id="auth-modal">
+        <div id="auth-modal" class="char-sheet">
 
-            <h2 id="auth-title">Create Account</h2>
+            <h2 id="auth-title">Create a Being</h2>
 
-            <!-- USERNAME -->
-            <label class="auth-field">
-                <span>Username / Login</span>
-                <input id="auth-username" type="text" autocomplete="off" autocapitalize="none" autocorrect="off">
-                <div id="username-hint" class="auth-hint"></div>
-            </label>
+            <!-- CHARACTER SHEET -->
+            <div class="char-row">
+                <span>Name:</span>
+                <input id="auth-username" type="text" autocomplete="off">
+            </div>
+            <div id="username-hint" class="auth-hint"></div>
 
-            <!-- PASSWORD -->
-            <label class="auth-field">
-                <span>Password</span>
+            <div class="char-row">
+                <span>Race:</span>
+                <div class="char-choice" id="race-select">
+                    <button class="race-btn" data-race="goblin">Goblin</button>
+                    <button class="race-btn" data-race="human">Human</button>
+                    <button class="race-btn" data-race="elf">Elf</button>
+                </div>
+            </div>
+
+            <div class="char-row">
+                <span>Pronouns:</span>
+                <div class="char-choice" id="pronoun-select">
+                    <button class="pronoun-btn" data-pronoun="he">He</button>
+                    <button class="pronoun-btn" data-pronoun="she">She</button>
+                    <button class="pronoun-btn" data-pronoun="they">They</button>
+                    <button class="pronoun-btn" data-pronoun="it">It</button>
+                </div>
+            </div>
+
+            <div class="char-row">
+                <span>Password:</span>
                 <input id="auth-password" type="password" autocomplete="off">
-                <div id="password-hint" class="auth-hint"></div>
-            </label>
+            </div>
+            <div id="password-hint" class="auth-hint"></div>
 
             <p id="auth-error" class="auth-error"></p>
 
             <div class="auth-buttons">
-                <button id="auth-confirm">Create</button>
+                <button id="auth-confirm">Confirm</button>
                 <button id="auth-cancel">Back</button>
-            </div>
-
-            <!-- RACE SELECTION -->
-            <div id="race-select" class="hidden">
-                <button class="race-btn" data-race="goblin">Goblin</button>
-                <button class="race-btn" data-race="human">Human</button>
-                <button class="race-btn" data-race="elf">Elf</button>
-            </div>
-
-            <!-- PRONOUN SELECTION -->
-            <div id="pronoun-select" class="hidden">
-                <button class="pronoun-btn" data-pronoun="he">He/Him</button>
-                <button class="pronoun-btn" data-pronoun="she">She/Her</button>
-                <button class="pronoun-btn" data-pronoun="they">They/Them</button>
-                <button class="pronoun-btn" data-pronoun="it">It/Its</button>
             </div>
 
         </div>
     </div>
 
-    <script type="module" src="main.js?v=3"></script>
+    <script type="module" src="main.js?v=4"></script>
 </body>
 </html>
-
-
-
