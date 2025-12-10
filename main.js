@@ -1,19 +1,11 @@
 // ===============================================
-// main.js – tiny glue file
-// Hooks up buttons + connects WebSocket
+// main.js – glue file
 // ===============================================
 
 import { initWebSocket, sendText } from "./client.js";
-import { showAuthModal } from "./ui.js";
+import { showAuthModal, hideAuthUI } from "./ui.js";
 
-// Welcome screen buttons
-const btnNew   = document.getElementById("btn-new");
-const btnLogin = document.getElementById("btn-login");
-
-btnNew.onclick   = () => showAuthModal("create");
-btnLogin.onclick = () => showAuthModal("login");
-
-// In-game input
+// Input
 const input   = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
@@ -25,19 +17,21 @@ sendBtn.onclick = () => {
 };
 
 input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-        sendBtn.click();
-    }
+    if (e.key === "Enter") sendBtn.click();
 });
 
-// 🔹 ADDED — HUD + connection status
+// Show auth modal
+document.getElementById("btn-new").onclick   = () => showAuthModal("create");
+document.getElementById("btn-login").onclick = () => showAuthModal("login");
+
+// Expose HUD hook
 export function showHUD() {
     const hud = document.getElementById("hud");
     const conn = document.getElementById("connection-status");
 
-    if (hud) hud.style.display = "block";
+    if (hud) hud.classList.remove("hidden");
     if (conn) conn.style.display = "none";
 }
 
-// Connect to your Render server
+// Connect to server
 initWebSocket("wss://muddygob-server-1.onrender.com");
