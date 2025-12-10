@@ -67,7 +67,6 @@ function addMessage(html) {
 
 function renderSystem(msg) {
     addMessage(`<div class="system-msg">${msg}</div>`);
-    // If modal is open, also show message there
     if (!modalOverlay.classList.contains("hidden")) {
         authError.textContent = msg;
     }
@@ -96,10 +95,11 @@ input.addEventListener("keypress", (e) => {
 btnSend.onclick = sendToServer;
 
 //---------------------------------------------------------
-// MAIN MESSAGE DISPATCHER
+// MESSAGE DISPATCHER
 //---------------------------------------------------------
 function handleMessage(raw) {
     let data;
+
     try {
         data = JSON.parse(raw);
     } catch {
@@ -111,14 +111,20 @@ function handleMessage(raw) {
         case "system":
             renderSystem(data.msg);
             break;
+
         case "room":
-            // Successful login/create should result in room data
             hideWelcomeAndModal();
             renderRoom(data);
             break;
-        case "death":
-            renderDeath(data);
+
+        case "choose_race":
+            renderSystem("Choose race: goblin, human, elf");
             break;
+
+        case "choose_pronouns":
+            renderSystem("Choose pronouns: he, she, they, it");
+            break;
+
         default:
             console.log("Unknown packet:", data);
     }
@@ -133,9 +139,7 @@ function renderRoom(room) {
             <b>${room.title}</b>
         </div>`;
 
-    if (room.background) {
-        setBackground(room.background);
-    }
+    if (room.background) setBackground(room.background);
 
     const order = ["up", "down", "left", "right"];
     const arrows = { up:"↑", down:"↓", left:"←", right:"→" };
@@ -163,90 +167,44 @@ function renderRoom(room) {
 }
 
 //---------------------------------------------------------
-// RENDER DEATH
-//---------------------------------------------------------
-function renderDeath(data) {
-    let html = `
-        <div style="color:#ff6666; font-size:22px; margin-bottom:10px;">
-            <b>${data.title}</b>
-        </div>
-    `;
-    (data.desc || []).forEach(line => {
-        html += `<p style="color:#ffc9c9;">${line}</p>`;
-    });
-
-    html += `
-        <p style="margin-top:10px; color:#ffaaaa;">
-            ${data.prompt || "You died."}
-        </p>
-    `;
-
-    addMessage(html);
-}
-
-//---------------------------------------------------------
-// ARROW KEY MOVEMENT
-//---------------------------------------------------------
-document.addEventListener("keydown", e => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-
-    switch (e.key) {
-        case "ArrowUp": ws.send("move up"); break;
-        case "ArrowDown": ws.send("move down"); break;
-        case "ArrowLeft": ws.send("move left"); break;
-        case "ArrowRight": ws.send("move right"); break;
-    }
-});
-
-//---------------------------------------------------------
-// WELCOME + MODAL LOGIC
+// WELCOME + AUTH MODAL LOGIC
 //---------------------------------------------------------
 function hideWelcomeAndModal() {
     welcomeScreen.classList.add("hidden");
     modalOverlay.classList.add("hidden");
     gameUI.classList.remove("hidden");
+
     authError.textContent = "";
     authUsername.value = "";
     authPassword.value = "";
 }
 
 function showAuthModal(mode) {
-    authMode = mode; // "create" or "login"
+    authMode = mode;
     authError.textContent = "";
     authUsername.value = "";
     authPassword.value = "";
 
-    if (mode === "create") {
-        authTitle.textContent = "Create Account";
-        btnAuthConfirm.textContent = "Create";
-    } else {
-        authTitle.textContent = "Login";
-        btnAuthConfirm.textContent = "Join";
-    }
+    authTitle.textContent = mode === "create" ? "Create Account" : "Login";
+    btnAuthConfirm.textContent = mode === "create" ? "Create" : "Join";
 
     modalOverlay.classList.remove("hidden");
     authUsername.focus();
 }
 
-// initial state: welcome visible, game UI hidden
+// Initial UI state
 welcomeScreen.classList.remove("hidden");
 gameUI.classList.add("hidden");
 modalOverlay.classList.add("hidden");
 
-// Buttons
-btnNew.onclick = () => {
-    showAuthModal("create");
-};
+// Button hookups
+btnNew.onclick = () => showAuthModal("create");
+btnLogin.onclick = () => showAuthModal("login");
+btnAuthCancel.onclick = () => modalOverlay.classList.add("hidden");
 
-btnLogin.onclick = () => {
-    showAuthModal("login");
-};
-
-btnAuthCancel.onclick = () => {
-    modalOverlay.classList.add("hidden");
-    authError.textContent = "";
-};
-
+//---------------------------------------------------------
+// CONFIRM (CREATE or LOGIN)
+//---------------------------------------------------------
 btnAuthConfirm.onclick = () => {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
         authError.textContent = "Not connected to server.";
@@ -262,18 +220,28 @@ btnAuthConfirm.onclick = () => {
     }
 
     if (authMode === "create") {
-        ws.send(JSON.stringify({
-            type: "create_account",
-            name,
-            password: pass
-        }));
+        // Step 1: start creation
+        ws.send(JSON.stringify({ type: "start_create" }));
+        ws.send(JSON.stringify({ type: "try_create", name }));
+        ws.send(JSON.stringify({ type: "try_create_pass", password: pass }));
+
+        // Ask race
+        let race = prompt("Race (goblin, human, elf):", "goblin");
+        if (!race) return authError.textContent = "No race chosen.";
+        race = race.toLowerCase().trim();
+        ws.send(JSON.stringify({ type: "choose_race", race }));
+
+        // Ask pronouns
+        let pronoun = prompt("Pronouns (he, she, they, it):", "they");
+        if (!pronoun) return authError.textContent = "No pronouns chosen.";
+        pronoun = pronoun.toLowerCase().trim();
+        ws.send(JSON.stringify({ type: "choose_pronoun", pronoun }));
+
     } else if (authMode === "login") {
         ws.send(JSON.stringify({
-            type: "login",
+            type: "try_login",
             name,
             password: pass
         }));
-    } else {
-        authError.textContent = "Unknown auth mode.";
     }
 };
