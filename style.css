@@ -420,6 +420,11 @@ button,
 }
 
 
+#input-bar {
+    position: sticky;
+    bottom: 0;
+}
+
 
 
 
