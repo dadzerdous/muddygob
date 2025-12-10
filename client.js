@@ -1,5 +1,5 @@
 // ===============================================
-// client.js  (Networking + Message Routing Only)
+// client.js – Networking + Message Routing
 // ===============================================
 
 import { hideAuthUI } from "./ui.js";
@@ -29,13 +29,18 @@ export function initWebSocket(url) {
     };
 
     ws.onmessage = (event) => {
-        const text = event.data;
+        const raw = event.data;
+
+        let data;
         try {
-            const data = JSON.parse(text);
-            routeMessage(data);
+            data = JSON.parse(raw);
         } catch {
-            renderSystem(text);
+            // raw text fallback
+            renderSystem(raw);
+            return;
         }
+
+        routeMessage(data);
     };
 }
 
@@ -59,17 +64,17 @@ function routeMessage(data) {
             break;
 
         case "room":
-            hideAuthUI(); // we are now in-game
+            hideAuthUI();    // finally enter game
             renderRoom(data);
             break;
 
         default:
-            console.warn("Unknown message from server:", data);
+            console.warn("Unknown server packet:", data);
     }
 }
 
 // -------------------------------------------------
-// EXPORT for UI
+// EXPORTS FOR UI
 // -------------------------------------------------
 export function beginCreateAccount(name, password, race, pronoun) {
     sendJSON({
@@ -81,17 +86,18 @@ export function beginCreateAccount(name, password, race, pronoun) {
     });
 }
 
-export function attemptLogin(loginName, pass) {
-    // loginName is typically: name@race.pronoun
+export function attemptLogin(loginId, password) {
     sendJSON({
         type: "try_login",
-        login: loginName,
-        password: pass
+        login: loginId,
+        password
     });
 }
 
-// Keyboard movement
-document.addEventListener("keydown", (e) => {
+// -------------------------------------------------
+// MOVEMENT KEYBOARD
+// -------------------------------------------------
+document.addEventListener("keydown", e => {
     switch (e.key) {
         case "ArrowUp":    sendText("move up"); break;
         case "ArrowDown":  sendText("move down"); break;
