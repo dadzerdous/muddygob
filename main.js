@@ -30,5 +30,14 @@ input.addEventListener("keypress", (e) => {
     }
 });
 
+// 🔹 ADDED — HUD + connection status
+export function showHUD() {
+    const hud = document.getElementById("hud");
+    const conn = document.getElementById("connection-status");
+
+    if (hud) hud.style.display = "block";
+    if (conn) conn.style.display = "none";
+}
+
 // Connect to your Render server
 initWebSocket("wss://muddygob-server-1.onrender.com");
