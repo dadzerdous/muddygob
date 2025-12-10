@@ -34,6 +34,28 @@ const RACE_PRONOUNS = {
     human:  ["he", "she", "they", "it"],
     elf:    ["he", "she"]
 };
+const body = document.body;
+
+function applyThemeForRace(race) {
+    const classes = body.classList;
+    classes.remove("theme-default", "theme-goblin", "theme-elf", "theme-human");
+
+    switch (race) {
+        case "goblin":
+            classes.add("theme-goblin");
+            break;
+        case "elf":
+            classes.add("theme-elf");
+            break;
+        case "human":
+            classes.add("theme-human");
+            break;
+        default:
+            classes.add("theme-default");
+            break;
+    }
+}
+
 
 /* ============================================================
    PUBLIC — SHOW / HIDE AUTH UI
@@ -67,12 +89,10 @@ export function hideAuthUI() {
     welcomeScreen.classList.add("hidden");
     gameUI.classList.remove("hidden");
 
-    // Turn HUD on here (no import from main.js)
-    const hud  = document.getElementById("hud");
-    const conn = document.getElementById("connection-status");
-    if (hud)  hud.classList.remove("hidden");
-    if (conn) conn.style.display = "none";
+    // apply race theme AFTER character is actually in the game
+    applyThemeForRace(chosenRace || "default");
 }
+
 
 /* ============================================================
    CREATE MODE (step-by-step)
