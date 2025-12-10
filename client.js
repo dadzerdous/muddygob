@@ -1,54 +1,111 @@
 // ===============================================
-// client.js – WebSocket handling for MuddyGob
+// client.js – Networking + Message Routing
 // ===============================================
 
-// IMPORTANT: Must NOT redeclare ws anywhere else.
+import { hideAuthUI } from "./ui.js";
+import { renderRoom, renderSystem } from "./render.js";
+
 let ws = null;
 
-
-// ------------------------------------------------
-// INIT WEBSOCKET
-// ------------------------------------------------
+// -------------------------------------------------
+// CONNECT WEBSOCKET
+// -------------------------------------------------
 export function initWebSocket(url) {
     ws = new WebSocket(url);
 
+    const statusEl = document.getElementById("connection-status");
+    statusEl.textContent = "Connecting...";
+
     ws.onopen = () => {
-        const status = document.getElementById("connection-status");
-        if (status) status.textContent = "✓ Connected!";
+        statusEl.textContent = "✓ Connected!";
     };
 
-    ws.onmessage = (event) => {
-        const data = event.data;
-        appendOutput(data);
+    ws.onerror = () => {
+        statusEl.textContent = "⚠ Connection error";
     };
 
     ws.onclose = () => {
-        const status = document.getElementById("connection-status");
-        if (status) status.textContent = "✗ Disconnected.";
+        statusEl.textContent = "✖ Disconnected";
+    };
+
+    ws.onmessage = (event) => {
+        const raw = event.data;
+
+        // Try JSON
+        try {
+            const data = JSON.parse(raw);
+            routeMessage(data);
+            return;
+        } catch (_) {
+            // Not JSON → treat as plain text
+            renderSystem(raw);
+        }
     };
 }
 
+// -------------------------------------------------
+// SEND JSON + TEXT
+// -------------------------------------------------
+export function sendJSON(obj) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(obj));
+    }
+}
 
-// ------------------------------------------------
-// SEND TEXT TO SERVER
-// ------------------------------------------------
 export function sendText(text) {
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(text);
     }
 }
 
+// -------------------------------------------------
+// ROUTE SERVER PACKETS
+// -------------------------------------------------
+function routeMessage(data) {
+    switch (data.type) {
+        case "system":
+            renderSystem(data.msg);
+            break;
 
-// ------------------------------------------------
-// BASIC OUTPUT HANDLER
-// ------------------------------------------------
-function appendOutput(msg) {
-    const out = document.getElementById("output");
-    if (!out) return;
+        case "room":
+            hideAuthUI();
+            renderRoom(data);
+            break;
 
-    const div = document.createElement("div");
-    div.textContent = msg;
-    out.appendChild(div);
-
-    out.scrollTop = out.scrollHeight;
+        default:
+            console.warn("Unknown server packet:", data);
+    }
 }
+
+// -------------------------------------------------
+// EXPORTED FOR UI
+// -------------------------------------------------
+export function beginCreateAccount(name, pass, race, pronoun) {
+    sendJSON({
+        type: "create_account",
+        name,
+        password: pass,
+        race,
+        pronoun
+    });
+}
+
+export function attemptLogin(loginId, password) {
+    sendJSON({
+        type: "try_login",
+        login: loginId,
+        password
+    });
+}
+
+// -------------------------------------------------
+// MOVEMENT CONTROLS
+// -------------------------------------------------
+document.addEventListener("keydown", e => {
+    switch (e.key) {
+        case "ArrowUp":    sendText("move up"); break;
+        case "ArrowDown":  sendText("move down"); break;
+        case "ArrowLeft":  sendText("move left"); break;
+        case "ArrowRight": sendText("move right"); break;
+    }
+});
