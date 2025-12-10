@@ -11,9 +11,6 @@ const gameUI = document.getElementById("game-ui");
 const raceSelect = document.getElementById("race-select");
 const raceButtons = document.querySelectorAll(".race-btn");
 
-const raceSelect = document.getElementById("race-select");
-const raceButtons = document.querySelectorAll(".race-btn");
-
 const pronounSelect = document.getElementById("pronoun-select");
 const pronounButtons = document.querySelectorAll(".pronoun-btn");
 
@@ -323,4 +320,5 @@ pronounButtons.forEach(btn => {
         pronounSelect.classList.add("hidden");
     });
 });
+
 
