@@ -509,6 +509,16 @@ button:hover,
 }
 
 
+.room-players {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: var(--text-soft);
+}
+
+.room-player::before {
+    content: "• ";
+}
+
 
 
 
