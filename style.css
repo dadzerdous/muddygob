@@ -1,4 +1,32 @@
-/* === GLOBAL RESET === */
+/* ============================================================
+   GLOBAL RESET + ROOT VARIABLES
+   ============================================================ */
+
+:root {
+    --bg-page: #000000;
+    --bg-panel: rgba(0,0,0,0.55);
+    --bg-panel-strong: #1a1333;
+    --bg-input: #120c24;
+
+    --text-main: #e0d6ff;
+    --text-soft: #cbbcff;
+    --text-muted: #aaaaaa;
+
+    --button-bg: #2f244d;
+    --button-bg-hover: #463375;
+    --button-text: #f5edff;
+
+    --accent-main: #8d74ff;
+    --accent-soft: #a998ff;
+    --border-main: #8d74ff;
+
+    --system-msg: #9ad1ff;
+    --error-color: #ff9d9d;
+
+    --exits-active: #ffdda0;
+    --exits-inactive: #555;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -7,75 +35,30 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Georgia", serif;
-    color: #e0d6ff;
-    background-color: #000;
+    color: var(--text-main);
 
-    /* default background, can be changed by setBackground() */
+    background-color: var(--bg-page);
+
+    /* Room-specific image from JS */
     background-image: url("images/default.png");
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
 }
 
-#auth-modal {
-    overflow-y: visible !important;
-}
-#auth-modal {
-    overflow-y: visible !important;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-
-/* =====================================================
-   🔹 ADDED — Minimal Emoji HUD (Level / XP / Stamina)
-   ===================================================== */
-#hud {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    color: #d8cfff;
-    background: rgba(0,0,0,0.25);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    line-height: 1.2;
-    backdrop-filter: blur(2px);
-    display: none;         /* shown after login */
-    z-index: 999;
-    pointer-events: none;
-    white-space: nowrap;
-}
-
-#hud-level,
-#hud-xp,
-#hud-sta {
-    margin: 1px 0;
-}
-
-
-/* =====================================================
-   🔹 UPDATED — Connection status moved to top-left
-   ===================================================== */
+/* ============================================================
+   CONNECTION STATUS
+   ============================================================ */
 .connection-status {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    margin: 0;
-    padding: 3px 6px;
-    font-size: 12px;
-    color: #aaa;
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px;
-    pointer-events: none;
-    z-index: 998;
+    margin: 8px 0 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
 }
 
-
-
-/* === WELCOME SCREEN === */
+/* ============================================================
+   WELCOME SCREEN
+   ============================================================ */
 .screen {
     display: flex;
     flex-direction: column;
@@ -89,36 +72,47 @@ body {
     font-size: 3rem;
     letter-spacing: 8px;
     margin-bottom: 10px;
-    color: #eee;
-    text-shadow: 0 0 16px #8d74ff;
+    color: var(--text-main);
+    text-shadow: 0 0 16px var(--accent-main);
 }
 
 #welcome-screen p {
     margin-bottom: 25px;
-    color: #cbbcff;
+    color: var(--text-soft);
     font-size: 1.1rem;
 }
 
-.welcome-buttons button {
+/* Unified button style (A option) */
+button,
+.race-btn,
+.pronoun-btn {
     padding: 12px 32px;
-    margin: 8px;
+    margin: 8px 0;
+    width: 100%;
+
     font-size: 1.1rem;
     border-radius: 10px;
-    border: none;
-    background: #2f244d;
-    color: #f5edff;
+    border: 2px solid var(--border-main);
+
+    background: var(--button-bg);
+    color: var(--button-text);
+
     cursor: pointer;
-    box-shadow: 0 0 8px rgba(0,0,0,0.6);
     transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
 }
 
-.welcome-buttons button:hover {
-    background: #463375;
+button:hover,
+.race-btn:hover,
+.pronoun-btn:hover {
+    background: var(--button-bg-hover);
     transform: translateY(-1px);
-    box-shadow: 0 0 14px rgba(141,116,255,0.7);
+    box-shadow: 0 0 14px var(--accent-main);
 }
 
-/* === GAME UI === */
+/* ============================================================
+   GAME UI
+   ============================================================ */
 #game-ui {
     display: flex;
     flex-direction: column;
@@ -129,17 +123,22 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
-    background: rgba(0,0,0,0.55);
+
+    background: var(--bg-panel);
     backdrop-filter: blur(3px);
-    border-top: 2px solid #8d74ff;
-    border-bottom: 2px solid #8d74ff;
+
+    border-top: 2px solid var(--border-main);
+    border-bottom: 2px solid var(--border-main);
+
+    font-size: 18px;
+    line-height: 1.4;
 }
 
 /* Exits block */
 .exits-block {
     margin-top: 16px;
     font-size: 20px;
-    color: #ffdda0;
+    color: var(--exits-active);
 }
 
 .exit-option {
@@ -148,40 +147,40 @@ body {
     margin: 4px 0;
 }
 
-.exit-option span {
-    margin-left: 8px;
-}
+.exit-option span { margin-left: 8px; }
 
 .active-exit {
-    color: #ffdda0;
+    color: var(--exits-active);
     font-weight: bold;
 }
 
 .inactive-exit {
-    color: #555;
+    color: var(--exits-inactive);
 }
 
-/* Input bar */
+/* ============================================================
+   INPUT BAR
+   ============================================================ */
 #input-bar {
     display: flex;
     padding: 10px;
-    background: #1a1333;
-    border-top: 2px solid #8d74ff;
+    background: var(--bg-panel-strong);
+    border-top: 2px solid var(--border-main);
 }
 
 #input {
     flex: 1;
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid #8d74ff;
-    background: #120c24;
-    color: #f5edff;
+    border: 1px solid var(--border-main);
+    background: var(--bg-input);
+    color: var(--text-main);
     font-size: 16px;
 }
 
 #input:focus {
     outline: none;
-    border-color: #c4a4ff;
+    border-color: var(--accent-soft);
 }
 
 #send {
@@ -189,28 +188,42 @@ body {
     padding: 8px 18px;
     border-radius: 6px;
     border: none;
-    background: #8d74ff;
+
+    background: var(--accent-main);
     color: #000;
+
     cursor: pointer;
     font-weight: bold;
     font-size: 15px;
+
     box-shadow: 0 0 10px rgba(141,116,255,0.6);
-    transition: background 0.2s ease, transform 0.1s ease;
 }
 
 #send:hover {
-    background: #a998ff;
+    background: var(--accent-soft);
     transform: translateY(-1px);
 }
 
-/* System message style */
+/* ============================================================
+   SYSTEM + ERROR TEXT
+   ============================================================ */
 .system-msg {
-    color: #9ad1ff;
+    color: var(--system-msg);
     margin: 4px 0;
     font-style: italic;
 }
 
-/* === Smoky modal === */
+.auth-error {
+    min-height: 18px;
+    margin: 6px 0 4px 0;
+    font-size: 0.8rem;
+    color: var(--error-color);
+    text-align: center;
+}
+
+/* ============================================================
+   SMOKY MODAL OVERLAY
+   ============================================================ */
 #modal-overlay {
     position: fixed;
     inset: 0;
@@ -218,6 +231,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 50;
+
     background:
         radial-gradient(circle at 20% 20%, rgba(160,120,255,0.18), transparent 60%),
         radial-gradient(circle at 80% 80%, rgba(40,0,80,0.65), rgba(0,0,0,0.95) 70%);
@@ -230,27 +244,93 @@ body {
     100% { background-position: 0% 0%, 100% 100%; }
 }
 
-/* Auth modal */
+/* ============================================================
+   AUTH MODAL / CHARACTER SHEET
+   ============================================================ */
 #auth-modal {
     min-width: 260px;
     max-width: 360px;
     padding: 20px 22px;
+
     background: rgba(5, 3, 12, 0.88);
     border-radius: 16px;
-    border: 1px solid rgba(196, 164, 255, 0.5);
+    border: 1px solid var(--border-main);
+
     box-shadow:
         0 0 18px rgba(0,0,0,0.9),
-        0 0 24px rgba(141,116,255,0.7);
+        0 0 24px var(--accent-main);
+
     backdrop-filter: blur(7px);
 }
 
 #auth-modal h2 {
     margin: 0 0 10px 0;
-    color: #eae0ff;
+    color: var(--text-main);
     font-size: 1.3rem;
     text-align: center;
-    text-shadow: 0 0 8px rgba(196,164,255,0.8);
+    text-shadow: 0 0 8px var(--accent-main);
 }
 
-/* ... (everything below this remains unchanged) ... */
+.char-sheet {
+    background: var(--bg-panel);
+    border: 2px solid var(--border-main);
+    border-radius: 12px;
+    padding: 25px;
+    color: var(--text-main);
+}
 
+.char-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.char-row span {
+    width: 30%;
+    font-size: 1rem;
+}
+
+.char-row input {
+    flex: 1;
+    padding: 6px 8px;
+    background: var(--bg-input);
+    color: var(--text-main);
+    border: 1px solid var(--border-main);
+    border-radius: 6px;
+}
+
+.char-choice {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   MOBILE BOOST
+   ============================================================ */
+@media (max-width: 600px) {
+
+    #auth-modal { width: 85%; padding: 20px; }
+    #output     { font-size: 20px; }
+    #input      { font-size: 18px; padding: 12px; }
+
+    button,
+    .race-btn,
+    .pronoun-btn {
+        font-size: 22px;
+        padding: 18px 20px;
+    }
+
+    h1 { font-size: 32px; }
+}
+
+#input-bar {
+    position: sticky;
+    bottom: 0;
+}
