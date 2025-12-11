@@ -11,16 +11,19 @@
 <body class="theme-default">
 
 
-<!-- 🔹 TOP BAR (connection + HUD) -->
-<div id="top-bar" class="hidden">
-    <p id="connection-status"></p>
+<!-- 🔹 FIXED TOP BAR -->
+<div id="top-bar">
+    <div id="connection-col">
+        <span id="connection-status">Connecting...</span>
+    </div>
 
-    <div id="hud">
+    <div id="hud-col">
         <div id="hud-level">🧩1</div>
         <div id="hud-xp">⭐0/10</div>
         <div id="hud-sta">💨████░</div>
     </div>
 </div>
+
 
 
     <!-- 🔹 Connection status -->
@@ -98,6 +101,7 @@
     <script type="module" src="main.js?v=5"></script>
 </body>
 </html>
+
 
 
 
