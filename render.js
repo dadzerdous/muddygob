@@ -1,3 +1,22 @@
+// ===============================================
+// render.js – Room + System Rendering
+// ===============================================
+
+export function renderSystem(msg) {
+    const output = document.getElementById("output");
+    if (output) {
+        output.innerHTML += `<div class="system-msg">${msg}</div><br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+
+    // Also pipe system messages into the auth modal if open
+    const modalOverlay = document.getElementById("modal-overlay");
+    const authError = document.getElementById("auth-error");
+    if (modalOverlay && !modalOverlay.classList.contains("hidden") && authError) {
+        authError.textContent = msg;
+    }
+}
+
 export function renderRoom(room) {
     const output = document.getElementById("output");
     if (!output) return;
@@ -6,23 +25,17 @@ export function renderRoom(room) {
         .map(line => `<p>${line}</p>`)
         .join("");
 
-    // --- NEW: players in this room ---
+    // players list
     let playersHtml = "";
     if (room.players && room.players.length > 0) {
-        const others = room.players;
-        const label  = "Players:";
-        const list   = others.map(name => `<span class="room-player">${name}</span>`).join(", ");
         playersHtml = `
             <div class="room-players">
-                <b>${label}</b> ${list}
+                <b>Players:</b> 
+                ${room.players.map(name => `<span class="room-player">${name}</span>`).join(", ")}
             </div>
         `;
     } else {
-        playersHtml = `
-            <div class="room-players">
-                <b>Players:</b> (just you)
-            </div>
-        `;
+        playersHtml = `<div class="room-players"><b>Players:</b> just you</div>`;
     }
 
     const html = `
@@ -30,7 +43,7 @@ export function renderRoom(room) {
         <div class="room-desc">${paragraphs}</div>
         ${playersHtml}
         <div class="room-exits">
-            <b>Exits:</b>
+            <b>Exits:</b> 
             ${(room.exits || []).map(e => `<span class="exit">${e}</span>`).join(", ")}
         </div>
     `;
@@ -38,7 +51,7 @@ export function renderRoom(room) {
     output.innerHTML += html + "<br>";
     output.scrollTop = output.scrollHeight;
 
-    // BACKGROUND IMAGE
+    // background 
     if (room.background) {
         document.body.style.backgroundImage = `url('images/${room.background}')`;
     }
