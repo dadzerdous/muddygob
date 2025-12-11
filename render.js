@@ -41,6 +41,6 @@ export function renderRoom(room) {
     output.scrollTop = output.scrollHeight;
 
     if (room.background) {
-        document.body.style.backgroundImage = `url('images/${room.background}.jpg')`;
+        document.body.style.backgroundImage = `url('images/${room.background}')`;
     }
 }
