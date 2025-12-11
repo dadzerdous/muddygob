@@ -44,7 +44,7 @@ function applyThemeForRace(race) {
             themeLink.href = "themes/goblin.css";
             break;
         case "elf":
-            themeLink.href = "themes/elf.css";
+            themeLink.href = "themes/elven.css";
             break;
         case "human":
             themeLink.href = "themes/human.css";
