@@ -218,6 +218,33 @@ button:hover,
     background: var(--accent-soft);
     transform: translateY(-1px);
 }
+#input-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#arrow-keys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+#arrow-keys .arrow-row {
+    display: flex;
+    gap: 4px;
+}
+
+.arrow-btn {
+    padding: 6px 10px;
+    font-size: 16px;
+    border: 1px solid var(--border-main);
+    background: var(--button-bg);
+    color: var(--button-text);
+    border-radius: 6px;
+}
+
 
 /* ============================================================
    SYSTEM + ERROR TEXT
@@ -480,6 +507,7 @@ button:hover,
     color: var(--text-soft);
     pointer-events: none;
 }
+
 
 
 
