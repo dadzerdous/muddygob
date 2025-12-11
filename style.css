@@ -123,6 +123,7 @@ button:hover,
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+   padding-top: 60px; /* Height of the top bar */
 
     background: var(--bg-panel);
     backdrop-filter: blur(3px);
@@ -389,6 +390,9 @@ button:hover,
 /* ============================
    TOP BAR (connection + HUD)
    ============================ */
+/* ============================================================
+   FIXED TOP BAR — ALWAYS VISIBLE
+   ============================================================ */
 #top-bar {
     position: fixed;
     top: 0;
@@ -399,10 +403,33 @@ button:hover,
     justify-content: space-between;
     align-items: center;
 
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+
     padding: 6px 12px;
     z-index: 9999;
-    pointer-events: none; /* allow clicks to pass through */
+    border-bottom: 2px solid var(--border-main);
 }
+
+/* LEFT COLUMN — Connection Status */
+#connection-col {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* RIGHT COLUMN — HUD */
+#hud-col {
+    display: flex;
+    gap: 12px;
+    font-size: 18px;
+}
+
+#hud-col div {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
 
 #connection-status {
     font-size: 14px;
@@ -425,4 +452,5 @@ button:hover,
 #top-bar.hidden {
     display: none !important;
 }
+
 
