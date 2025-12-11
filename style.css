@@ -422,3 +422,7 @@ button:hover,
     border-radius: 6px;
 }
 
+#top-bar.hidden {
+    display: none !important;
+}
+
