@@ -90,6 +90,10 @@ export function hideAuthUI() {
 
     // apply race theme AFTER character is actually in the game
     applyThemeForRace(chosenRace || "default");
+
+    // show HUD
+document.getElementById("hud").classList.remove("hidden");
+
 }
 
 
