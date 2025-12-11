@@ -46,11 +46,23 @@
     <div id="game-ui" class="hidden">
         <div id="output"></div>
 
-        <div id="input-bar">
-            <input id="input" type="text" placeholder="Type a command..." autocomplete="off">
-            <button id="send">Send</button>
+<div id="input-bar">
+    <input id="input" type="text" placeholder="Type a command..." autocomplete="off">
+
+    <div id="input-buttons">
+        <button id="send">Send</button>
+
+        <div id="arrow-keys">
+            <button class="arrow-btn" data-dir="north">↑</button>
+            <div class="arrow-row">
+                <button class="arrow-btn" data-dir="west">←</button>
+                <button class="arrow-btn" data-dir="south">↓</button>
+                <button class="arrow-btn" data-dir="east">→</button>
+            </div>
         </div>
     </div>
+</div>
+
 
     <!-- Modal overlay -->
     <div id="modal-overlay" class="hidden">
@@ -103,6 +115,7 @@
     <script type="module" src="main.js?v=5"></script>
 </body>
 </html>
+
 
 
 
