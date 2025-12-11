@@ -46,6 +46,20 @@ body {
     background-attachment: fixed;
 }
 
+.chat-you {
+    color: #9ad1ff;
+    font-weight: bold;
+}
+
+.chat-name {
+    color: #ffddb3;
+    font-weight: bold;
+}
+
+.chat-text {
+    color: #ffffff;
+}
+
 /* ============================================================
    CONNECTION STATUS
    ============================================================ */
@@ -460,6 +474,7 @@ button:hover,
     color: var(--text-soft);
     pointer-events: none;
 }
+
 
 
 
