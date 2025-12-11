@@ -37,24 +37,23 @@ const RACE_PRONOUNS = {
 const body = document.body;
 
 function applyThemeForRace(race) {
-    const classes = body.classList;
-    classes.remove("theme-default", "theme-goblin", "theme-elf", "theme-human");
+    const themeLink = document.getElementById("theme-css");
 
     switch (race) {
         case "goblin":
-            classes.add("theme-goblin");
+            themeLink.href = "themes/goblin.css";
             break;
         case "elf":
-            classes.add("theme-elf");
+            themeLink.href = "themes/elf.css";
             break;
         case "human":
-            classes.add("theme-human");
+            themeLink.href = "themes/human.css";
             break;
         default:
-            classes.add("theme-default");
-            break;
+            themeLink.href = "themes/default.css";
     }
 }
+
 
 
 /* ============================================================
