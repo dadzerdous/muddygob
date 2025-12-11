@@ -92,7 +92,8 @@ export function hideAuthUI() {
     applyThemeForRace(chosenRace || "default");
 
     // show HUD
-document.getElementById("hud").classList.remove("hidden");
+document.getElementById("top-bar").classList.remove("hidden");
+
 
 }
 
