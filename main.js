@@ -3,7 +3,7 @@
 // ===============================================
 
 import { initWebSocket, sendText } from "./client.js";
-import { showAuthModal, enterGameUI, updateHUD } from "./ui.js";
+import { showAuthModal, hideAuthUI } from "./ui.js";
 
 // -----------------------------------------
 // SEND BUTTON + INPUT BOX
@@ -25,7 +25,7 @@ if (sendBtn && input) {
 }
 
 // -----------------------------------------
-// THEME LOADER
+// THEME LOADER (optional external call)
 // -----------------------------------------
 export function setTheme(name) {
     const theme = document.getElementById("theme-css");
@@ -39,7 +39,7 @@ document.getElementById("btn-new").onclick = () => showAuthModal("create");
 document.getElementById("btn-login").onclick = () => showAuthModal("login");
 
 // -----------------------------------------
-// ARROW NAVIGATION (if arrows exist)
+// ARROW NAVIGATION BUTTONS
 // -----------------------------------------
 document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     btn.onclick = () => {
