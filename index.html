@@ -10,8 +10,10 @@
 
 <body class="theme-default">
 
-
-<div id="top-bar">
+<!-- =======================================
+     TOP BAR
+======================================= -->
+<div id="top-bar" class="hidden">
     <div id="connection-col">
         <span id="connection-status">Connecting...</span>
     </div>
@@ -26,105 +28,96 @@
 </div>
 
 
+<!-- =======================================
+     WELCOME SCREEN
+======================================= -->
+<div id="welcome-screen" class="screen">
+    <h1>M U D D Y G O B</h1>
+    <p>A dark fantasy multiplayer story v0.0.07</p>
 
-
-
-
-    <!-- Welcome screen -->
-    <div id="welcome-screen" class="screen">
-        <h1>M U D D Y G O B</h1>
-        <p>A dark fantasy multiplayer story v0.0.08</p>
-
-        <div class="welcome-buttons">
-            <button id="btn-new">New</button>
-            <button id="btn-login">Login</button>
-        </div>
-    </div>
-
-    <!-- Game UI -->
-    <div id="game-ui" class="hidden">
-        <div id="output"></div>
-
-<div id="input-bar">
-    <input id="input" type="text" placeholder=""Try typing 𝘩𝘦𝘭𝘱"" autocomplete="off">
-
-    <div id="input-buttons">
-        <button id="send">Send</button>
-
-        <div id="arrow-keys">
-            <button class="arrow-btn" data-dir="north">↑</button>
-            <div class="arrow-row">
-                <button class="arrow-btn" data-dir="west">←</button>
-                <button class="arrow-btn" data-dir="south">↓</button>
-                <button class="arrow-btn" data-dir="east">→</button>
-            </div>
-        </div>
+    <div class="welcome-buttons">
+        <button id="btn-new">New</button>
+        <button id="btn-login">Login</button>
     </div>
 </div>
 
 
-    <!-- Modal overlay -->
-    <div id="modal-overlay" class="hidden">
-        <div id="auth-modal" class="char-sheet">
+<!-- =======================================
+     GAME SCREEN
+======================================= -->
+<div id="game-ui" class="hidden">
 
-            <h2 id="auth-title">Create a Being</h2>
+    <div id="output"></div>
 
-            <!-- CHARACTER SHEET -->
-            <div class="char-row">
-                <span>Name:</span>
-                <input id="auth-username" type="text" autocomplete="off">
-            </div>
-            <div id="username-hint" class="auth-hint"></div>
+    <div id="input-bar">
+        <input id="input" type="text" placeholder="Try typing 𝘩𝘦𝘭𝘱" autocomplete="off">
 
-            <div class="char-row">
-                <span>Race:</span>
-                <div class="char-choice" id="race-select">
-                    <button class="race-btn" data-race="goblin">Goblin</button>
-                    <button class="race-btn" data-race="human">Human</button>
-                    <button class="race-btn" data-race="elf">Elf</button>
+        <div id="input-buttons">
+            <button id="send">Send</button>
+
+            <div id="arrow-keys">
+                <button class="arrow-btn" data-dir="north">↑</button>
+                <div class="arrow-row">
+                    <button class="arrow-btn" data-dir="west">←</button>
+                    <button class="arrow-btn" data-dir="south">↓</button>
+                    <button class="arrow-btn" data-dir="east">→</button>
                 </div>
             </div>
-
-            <div class="char-row">
-                <span>Pronouns:</span>
-                <div class="char-choice" id="pronoun-select">
-                    <button class="pronoun-btn" data-pronoun="he">He</button>
-                    <button class="pronoun-btn" data-pronoun="she">She</button>
-                    <button class="pronoun-btn" data-pronoun="they">They</button>
-                    <button class="pronoun-btn" data-pronoun="it">It</button>
-                </div>
-            </div>
-
-            <div class="char-row">
-                <span>Password:</span>
-                <input id="auth-password" type="password" autocomplete="off">
-            </div>
-            <div id="password-hint" class="auth-hint"></div>
-
-            <p id="auth-error" class="auth-error"></p>
-
-            <div class="auth-buttons">
-                <button id="auth-confirm">Confirm</button>
-                <button id="auth-cancel">Back</button>
-            </div>
-
         </div>
     </div>
 
-    <script type="module" src="main.js?v=5"></script>
+</div>
+
+
+<!-- =======================================
+     AUTH MODAL
+======================================= -->
+<div id="modal-overlay" class="hidden">
+    <div id="auth-modal" class="char-sheet">
+
+        <h2 id="auth-title">Create a Being</h2>
+
+        <div class="char-row">
+            <span>Name:</span>
+            <input id="auth-username" type="text" autocomplete="off">
+        </div>
+        <div id="username-hint" class="auth-hint"></div>
+
+        <div class="char-row">
+            <span>Race:</span>
+            <div class="char-choice" id="race-select">
+                <button class="race-btn" data-race="goblin">Goblin</button>
+                <button class="race-btn" data-race="human">Human</button>
+                <button class="race-btn" data-race="elf">Elf</button>
+            </div>
+        </div>
+
+        <div class="char-row">
+            <span>Pronouns:</span>
+            <div class="char-choice" id="pronoun-select">
+                <button class="pronoun-btn" data-pronoun="he">He</button>
+                <button class="pronoun-btn" data-pronoun="she">She</button>
+                <button class="pronoun-btn" data-pronoun="they">They</button>
+                <button class="pronoun-btn" data-pronoun="it">It</button>
+            </div>
+        </div>
+
+        <div class="char-row">
+            <span>Password:</span>
+            <input id="auth-password" type="password" autocomplete="off">
+        </div>
+        <div id="password-hint" class="auth-hint"></div>
+
+        <p id="auth-error" class="auth-error"></p>
+
+        <div class="auth-buttons">
+            <button id="auth-confirm">Confirm</button>
+            <button id="auth-cancel">Back</button>
+        </div>
+
+    </div>
+</div>
+
+<script type="module" src="main.js?v=5"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
