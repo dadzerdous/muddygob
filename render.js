@@ -2,29 +2,33 @@ export function renderRoom(room) {
     const output = document.getElementById("output");
     if (!output) return;
 
-    // Combine paragraphs into a single string so we can replace object names
-    let roomText = (room.desc || []).join("\n\n");
-
-    // INSERT OBJECT EMOJIS IF PROVIDED
-    if (room.objects) {
-        for (const [name, obj] of Object.entries(room.objects)) {
-            if (!obj.emoji) continue;
-
-            // whole-word replace (rock → 🪨 rock)
-            const regex = new RegExp(`\\b${name}\\b`, "gi");
-            roomText = roomText.replace(regex, `${obj.emoji} ${name}`);
-        }
-    }
-
-    // Re-split the enhanced text back into <p> paragraphs
-    const paragraphs = roomText
-        .split("\n\n")
-        .map(l => `<p>${l}</p>`)
+    const paragraphs = (room.desc || [])
+        .map(line => `<p>${line}</p>`)
         .join("");
 
-    let html = `
+    // --- NEW: players in this room ---
+    let playersHtml = "";
+    if (room.players && room.players.length > 0) {
+        const others = room.players;
+        const label  = "Players:";
+        const list   = others.map(name => `<span class="room-player">${name}</span>`).join(", ");
+        playersHtml = `
+            <div class="room-players">
+                <b>${label}</b> ${list}
+            </div>
+        `;
+    } else {
+        playersHtml = `
+            <div class="room-players">
+                <b>Players:</b> (just you)
+            </div>
+        `;
+    }
+
+    const html = `
         <div class="room-title">${room.title}</div>
         <div class="room-desc">${paragraphs}</div>
+        ${playersHtml}
         <div class="room-exits">
             <b>Exits:</b>
             ${(room.exits || []).map(e => `<span class="exit">${e}</span>`).join(", ")}
