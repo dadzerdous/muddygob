@@ -452,5 +452,14 @@ button:hover,
 #top-bar.hidden {
     display: none !important;
 }
+#player-name-col {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-soft);
+    pointer-events: none;
+}
+
 
 
