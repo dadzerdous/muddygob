@@ -386,3 +386,39 @@ button:hover,
     backdrop-filter: blur(3px);
 }
 
+/* ============================
+   TOP BAR (connection + HUD)
+   ============================ */
+#top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 6px 12px;
+    z-index: 9999;
+    pointer-events: none; /* allow clicks to pass through */
+}
+
+#connection-status {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+}
+
+#hud {
+    display: flex;
+    gap: 12px;
+    font-size: 18px;
+}
+
+#hud div {
+    background: rgba(0,0,0,0.4);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
