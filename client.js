@@ -5,8 +5,6 @@
 import { hideAuthUI } from "./ui.js";
 import { renderRoom, renderSystem } from "./render.js";
 
-let ws = null;
-
 // -------------------------------------------------
 // CONNECT WEBSOCKET
 // -------------------------------------------------
@@ -139,4 +137,5 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
+
 
