@@ -345,10 +345,16 @@ button:hover,
     h1 { font-size: 32px; }
 }
 
-#input-bar {
-    position: sticky;
-    bottom: 0;
-}
+    #input-bar {
+        position: sticky !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background: #1a1333;
+        border-top: 2px solid #8d74ff;
+    }
+
 #hud {
     position: fixed;
     top: 8px;
@@ -379,9 +385,9 @@ button:hover,
     z-index: 200;
 }
 
-#output {
-    padding-bottom: 80px; /* prevent overlap by input bar */
-}
+    #output {
+        padding-bottom: 140px; 
+    }
 
 #hud {
     position: fixed;
@@ -474,6 +480,7 @@ button:hover,
     color: var(--text-soft);
     pointer-events: none;
 }
+
 
 
 
