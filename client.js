@@ -10,38 +10,68 @@ let ws = null;
 // -------------------------------------------------
 // CONNECT WEBSOCKET
 // -------------------------------------------------
+// ===============================================
+// WebSocket with Auto-Reconnect + Heartbeat
+// ===============================================
+
+let ws = null;
+let reconnectDelay = 2000;   // 2 seconds
+let heartbeatInterval = null;
+
 export function initWebSocket(url) {
     ws = new WebSocket(url);
 
     const statusEl = document.getElementById("connection-status");
+    const playersOnlineEl = document.getElementById("players-online");
+
     statusEl.textContent = "Connecting...";
 
     ws.onopen = () => {
-        statusEl.textContent = "✓ Connected!";
+        statusEl.textContent = "✓ Connected";
+
+        // Start heartbeat (send ping every 20 sec)
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: "ping" }));
+            }
+        }, 20000);
     };
 
     ws.onerror = () => {
-        statusEl.textContent = "⚠ Connection error";
+        statusEl.textContent = "⚠ Connection Error";
     };
 
     ws.onclose = () => {
         statusEl.textContent = "✖ Disconnected";
+        if (playersOnlineEl) playersOnlineEl.textContent = "";
+
+        // Auto-reconnect
+        setTimeout(() => initWebSocket(url), reconnectDelay);
     };
 
     ws.onmessage = (event) => {
         const raw = event.data;
 
-        // Try JSON
+        // PONG response
+        if (raw === "pong") return;
+
         try {
             const data = JSON.parse(raw);
+
+            if (data.type === "players_online") {
+                if (playersOnlineEl)
+                    playersOnlineEl.textContent = `Players Online: ${data.count}`;
+                return;
+            }
+
             routeMessage(data);
-            return;
-        } catch (_) {
-            // Not JSON → treat as plain text
+        } catch {
             renderSystem(raw);
         }
     };
 }
+
 
 // -------------------------------------------------
 // SEND JSON + TEXT
@@ -109,3 +139,4 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
+
