@@ -55,26 +55,37 @@ ws.onopen = () => {
         setTimeout(() => initWebSocket(url), reconnectDelay);
     };
 
-    ws.onmessage = (event) => {
-        const raw = event.data;
+ws.onmessage = (event) => {
+    const raw = event.data;
 
-        // PONG response
-        if (raw === "pong") return;
+    if (raw === "pong") return;
 
-        try {
-            const data = JSON.parse(raw);
+    // Try to parse JSON
+    let data;
+    try {
+        data = JSON.parse(raw);
+    } catch {
+        // Raw plaintext message
+        return renderSystem(raw);
+    }
 
-            if (data.type === "players_online") {
-                if (playersOnlineEl)
-                    playersOnlineEl.textContent = `Players Online: ${data.count}`;
-                return;
-            }
+    // Handle JSON packets
+    switch (data.type) {
+        case "players_online":
+            if (playersOnlineEl)
+                playersOnlineEl.textContent = `Players Online: ${data.count}`;
+            return;
 
-            routeMessage(data);
-        } catch {
-            renderSystem(raw);
-        }
-    };
+        case "system":
+        case "session_token":
+        case "room":
+            return routeMessage(data);
+
+        default:
+            console.warn("Unknown packet:", data);
+    }
+};
+
 }
 
 
@@ -149,6 +160,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
