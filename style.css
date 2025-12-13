@@ -543,6 +543,30 @@ button:hover,
 
 
 
+.obj {
+    cursor: pointer;
+    color: #ffd27d;
+    font-weight: bold;
+}
+
+.obj:hover {
+    text-decoration: underline;
+}
+
+.obj-actions {
+    margin: 6px 0 12px 20px;
+}
+
+.obj-actions button {
+    margin-right: 6px;
+    padding: 2px 6px;
+    font-size: 0.85em;
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
 
 
 
