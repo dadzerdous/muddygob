@@ -73,15 +73,15 @@ export function renderRoom(data) {
 // ===============================================
 // Dim movement buttons
 // ===============================================
-function updateMovementButtons(exits) {
-    const dirs = ["north", "south", "east", "west"];
+function updateMovementButtons(data) {
+    document.querySelectorAll(".arrow-btn").forEach(btn => {
+        const dir = btn.getAttribute("data-dir");
 
-    dirs.forEach(d => {
-        const btn = document.getElementById(`btn-${d}`);
-        if (!btn) return;
-
-        if (exits.includes(d)) btn.classList.remove("disabled");
-        else btn.classList.add("disabled");
+        if (data.exits.includes(dir)) {
+            btn.classList.remove("disabled");
+        } else {
+            btn.classList.add("disabled");
+        }
     });
 }
 
