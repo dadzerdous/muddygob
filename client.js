@@ -24,17 +24,24 @@ export function initWebSocket(url) {
 
     statusEl.textContent = "Connecting...";
 
-    ws.onopen = () => {
-        statusEl.textContent = "✓ Connected";
+ws.onopen = () => {
+    statusEl.textContent = "✓ Connected";
 
-        // Start heartbeat (send ping every 20 sec)
-        if (heartbeatInterval) clearInterval(heartbeatInterval);
-        heartbeatInterval = setInterval(() => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: "ping" }));
-            }
-        }, 20000);
-    };
+    // Heartbeat
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ping" }));
+        }
+    }, 20000);
+
+    // 🔥 Attempt auto-resume if we have a token
+    const token = localStorage.getItem("mg_token");
+    if (token) {
+        ws.send(JSON.stringify({ type: "resume", token }));
+    }
+};
+
 
     ws.onerror = () => {
         statusEl.textContent = "⚠ Connection Error";
@@ -94,6 +101,11 @@ function routeMessage(data) {
         case "system":
             renderSystem(data.msg);
             break;
+            
+            case "session_token":
+    localStorage.setItem("mg_token", data.token);
+    return;
+
 
         case "room":
             hideAuthUI();
@@ -137,5 +149,6 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move right"); break;
     }
 });
+
 
 
