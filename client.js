@@ -17,6 +17,8 @@ let reconnectDelay = 2000;   // 2 seconds
 let heartbeatInterval = null;
 
 export function initWebSocket(url) {
+    console.log("📱 TOKEN FROM STORAGE:", localStorage.getItem("mg_token"));
+
     ws = new WebSocket(url);
 
     const statusEl = document.getElementById("connection-status");
@@ -160,6 +162,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
