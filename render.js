@@ -2,57 +2,87 @@
 // render.js – Room + System Rendering
 // ===============================================
 
-export function renderSystem(msg) {
-    const output = document.getElementById("output");
-    if (output) {
-        output.innerHTML += `<div class="system-msg">${msg}</div><br>`;
-        output.scrollTop = output.scrollHeight;
-    }
+import { sendText } from "./client.js";
 
-    // Also pipe system messages into the auth modal if open
-    const modalOverlay = document.getElementById("modal-overlay");
-    const authError = document.getElementById("auth-error");
-    if (modalOverlay && !modalOverlay.classList.contains("hidden") && authError) {
-        authError.textContent = msg;
-    }
+export function renderSystem(msg) {
+    const out = document.getElementById("output");
+    out.innerHTML += `<div class="system-msg">${msg}</div>`;
+    out.scrollTop = out.scrollHeight;
 }
 
-export function renderRoom(room) {
-    const output = document.getElementById("output");
-    if (!output) return;
+export function renderRoom(data) {
+    const out = document.getElementById("output");
 
-    const paragraphs = (room.desc || [])
-        .map(line => `<p>${line}</p>`)
-        .join("");
+    // Clear previous
+    out.innerHTML = "";
 
-    // players list
-    let playersHtml = "";
-    if (room.players && room.players.length > 0) {
-        playersHtml = `
-            <div class="room-players">
-                <b>Players:</b> 
-                ${room.players.map(name => `<span class="room-player">${name}</span>`).join(", ")}
-            </div>
-        `;
+    // Title
+    out.innerHTML += `<h2>${data.title}</h2>`;
+
+    // Description
+    if (Array.isArray(data.desc)) {
+        data.desc.forEach(line => {
+            out.innerHTML += `<p>${line}</p>`;
+        });
     } else {
-        playersHtml = `<div class="room-players"><b>Players:</b> just you</div>`;
+        out.innerHTML += `<p>${data.desc}</p>`;
     }
 
-    const html = `
-        <div class="room-title">${room.title}</div>
-        <div class="room-desc">${paragraphs}</div>
-        ${playersHtml}
-        <div class="room-exits">
-            <b>Exits:</b> 
-            ${(room.exits || []).map(e => `<span class="exit">${e}</span>`).join(", ")}
+    // EXITS
+    out.innerHTML += `<div class="exits">
+        <strong>Exits:</strong> ${data.exits.join(", ")}
+    </div>`;
+
+    // PLAYERS
+    if (data.players && data.players.length > 0) {
+        out.innerHTML += `<div class="players">
+            <strong>Players here:</strong><br>
+            ${data.players.map(p => `• ${p}`).join("<br>")}
+        </div>`;
+    }
+
+    // ============================================
+    // NEW: OBJECTS
+    // ============================================
+    if (data.objects && data.objects.length > 0) {
+        out.innerHTML += `<div class="objects">
+            <strong>Objects:</strong><br>
+            ${data.objects.map(obj => renderObjectBlock(obj)).join("")}
+        </div>`;
+    }
+
+    out.scrollTop = out.scrollHeight;
+}
+
+// ===============================================
+// Helper — Renders object with clickable actions
+// ===============================================
+function renderObjectBlock(obj) {
+    const emoji = obj.emoji ? obj.emoji : "•";
+
+    const actions = obj.actions
+        .map(a => `<button class="obj-btn" data-action="${a}" data-name="${obj.name}">
+            ${a}
+        </button>`)
+        .join(" ");
+
+    return `
+        <div class="object-entry">
+            <span class="object-emoji">${emoji}</span>
+            <span class="object-name">${obj.name}</span>
+            <div class="object-actions">${actions}</div>
         </div>
     `;
-
-    output.innerHTML += html + "<br>";
-    output.scrollTop = output.scrollHeight;
-
-    // background 
-    if (room.background) {
-        document.body.style.backgroundImage = `url('images/${room.background}')`;
-    }
 }
+
+// ===============================================
+// CLICK EVENTS FOR OBJECT BUTTONS
+// ===============================================
+document.addEventListener("click", e => {
+    if (e.target.classList.contains("obj-btn")) {
+        const action = e.target.getAttribute("data-action");
+        const name   = e.target.getAttribute("data-name");
+
+        sendText(`${action} ${name}`);
+    }
+});
