@@ -143,12 +143,14 @@ export function attemptLogin(loginId, password) {
 // -------------------------------------------------
 document.addEventListener("keydown", e => {
     switch (e.key) {
-        case "ArrowUp":    sendText("move up"); break;
-        case "ArrowDown":  sendText("move down"); break;
-        case "ArrowLeft":  sendText("move left"); break;
-        case "ArrowRight": sendText("move right"); break;
+        case "ArrowUp":    sendText("move north"); break;
+        case "ArrowDown":  sendText("move south"); break;
+        case "ArrowLeft":  sendText("move west"); break;
+        case "ArrowRight": sendText("move east"); break;
     }
 });
+
+
 
 
 
