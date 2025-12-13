@@ -12,44 +12,46 @@ export function renderSystem(msg) {
 
 export function renderRoom(data) {
     const out = document.getElementById("output");
-
-    // Clear previous
     out.innerHTML = "";
 
     // Title
     out.innerHTML += `<h2>${data.title}</h2>`;
 
-    // Description
-    if (Array.isArray(data.desc)) {
-        data.desc.forEach(line => {
-            out.innerHTML += `<p>${line}</p>`;
-        });
-    } else {
-        out.innerHTML += `<p>${data.desc}</p>`;
+    // --- Build description with inline objects ---
+    let descHtml = "";
+    const objects = data.objects || [];
+
+    function inlineObject(word) {
+        const obj = objects.find(o => o.name.toLowerCase() === word.toLowerCase());
+        if (!obj) return word;
+
+        const emoji = obj.emoji || "";
+        return `${emoji} <span class="obj" data-name="${obj.name}" data-actions='${JSON.stringify(obj.actions)}'>${obj.name}</span>`;
     }
+
+    (Array.isArray(data.desc) ? data.desc : [data.desc])
+        .forEach(line => {
+            // Replace each object name with clickable markup
+            let processed = line;
+            objects.forEach(o => {
+                const regex = new RegExp(`\\b${o.name}\\b`, "gi");
+                processed = processed.replace(regex, match => inlineObject(match));
+            });
+
+            descHtml += `<p>${processed}</p>`;
+        });
+
+    out.innerHTML += descHtml;
 
     // EXITS
-    out.innerHTML += `<div class="exits">
-        <strong>Exits:</strong> ${data.exits.join(", ")}
-    </div>`;
+    out.innerHTML += `<div class="exits"><strong>Exits:</strong> ${data.exits.join(", ")}</div>`;
 
     // PLAYERS
-    if (data.players && data.players.length > 0) {
-        out.innerHTML += `<div class="players">
-            <strong>Players here:</strong><br>
-            ${data.players.map(p => `• ${p}`).join("<br>")}
-        </div>`;
-    }
+    if (data.players?.length)
+        out.innerHTML += `<div class="players"><strong>Players here:</strong><br>${data.players.map(n => `• ${n}`).join("<br>")}</div>`;
 
-    // ============================================
-    // NEW: OBJECTS
-    // ============================================
-    if (data.objects && data.objects.length > 0) {
-        out.innerHTML += `<div class="objects">
-            <strong>Objects:</strong><br>
-            ${data.objects.map(obj => renderObjectBlock(obj)).join("")}
-        </div>`;
-    }
+    // Clear old action boxes
+    hideAllObjectActionMenus();
 
     out.scrollTop = out.scrollHeight;
 }
@@ -85,4 +87,53 @@ document.addEventListener("click", e => {
 
         sendText(`${action} ${name}`);
     }
+});
+
+
+// ===============================================
+// Inline Object Action Menu
+// ===============================================
+
+import { sendText } from "./client.js";
+
+function hideAllObjectActionMenus() {
+    document.querySelectorAll(".obj-actions").forEach(el => el.remove());
+}
+
+document.addEventListener("click", e => {
+    // Clicked outside → close all
+    if (!e.target.classList.contains("obj")) {
+        hideAllObjectActionMenus();
+        return;
+    }
+
+    // Clicked an object
+    const span = e.target;
+    const name = span.getAttribute("data-name");
+    const actions = JSON.parse(span.getAttribute("data-actions"));
+
+    // Remove any other open menus
+    hideAllObjectActionMenus();
+
+    // Build menu
+    const menu = document.createElement("div");
+    menu.classList.add("obj-actions");
+    menu.innerHTML = actions
+        .map(a => `<button data-action="${a}" data-name="${name}">${a}</button>`)
+        .join(" ");
+
+    // Insert *right after* the object’s parent paragraph
+    span.insertAdjacentElement("afterend", menu);
+});
+
+// Handle clicking an action button
+document.addEventListener("click", e => {
+    if (!e.target.matches(".obj-actions button")) return;
+
+    const action = e.target.getAttribute("data-action");
+    const name   = e.target.getAttribute("data-name");
+
+    sendText(`${action} ${name}`);
+
+    hideAllObjectActionMenus();
 });
