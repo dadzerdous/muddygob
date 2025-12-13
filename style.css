@@ -568,6 +568,11 @@ button:hover,
 }
 
 
+.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
 
 
 
