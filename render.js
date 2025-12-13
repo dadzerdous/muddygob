@@ -56,6 +56,24 @@ export function renderRoom(data) {
     out.scrollTop = out.scrollHeight;
 }
 
+// Dim movement buttons if exits don't allow direction
+function updateMovementButtons() {
+    const dirs = ["north","south","east","west"];
+    dirs.forEach(d => {
+        const btn = document.getElementById(`btn-${d}`);
+        if (!btn) return;
+
+        if (data.exits.includes(d)) {
+            btn.classList.remove("disabled");
+        } else {
+            btn.classList.add("disabled");
+        }
+    });
+}
+
+updateMovementButtons();
+
+
 // ===============================================
 // CLICK EVENTS FOR OLD OBJECT BUTTONS (legacy)
 // ===============================================
