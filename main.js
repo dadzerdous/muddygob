@@ -52,3 +52,4 @@ document.querySelectorAll(".arrow-btn")?.forEach(btn => {
 // CONNECT TO SERVER
 // -----------------------------------------
 initWebSocket("wss://muddygob-server-1.onrender.com");
+
