@@ -119,11 +119,11 @@ function routeMessage(data) {
     localStorage.setItem("mg_token", data.token);
     return;
 
+case "room":
+    hideAuthUI(data.player);   // <-- send player data
+    renderRoom(data);
+    break;
 
-        case "room":
-            hideAuthUI();
-            renderRoom(data);
-            break;
 
         default:
             console.warn("Unknown server packet:", data);
@@ -162,6 +162,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
