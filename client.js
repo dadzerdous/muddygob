@@ -87,6 +87,7 @@ ws.onmessage = (event) => {
         case "system":
         case "session_token":
         case "room":
+            case "player_state": 
             return routeMessage(data);
 
         default:
@@ -172,6 +173,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
