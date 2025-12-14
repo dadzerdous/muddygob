@@ -62,7 +62,7 @@ export function renderRoom(data) {
     // -----------------------------------------------
     // DIM MOVEMENT BUTTONS
     // -----------------------------------------------
-    updateMovementButtons(data.exits);
+    updateMovementButtons(data);
 
     // Close old menus
     hideAllObjectActionMenus();
@@ -73,7 +73,9 @@ export function renderRoom(data) {
 // ===============================================
 // Dim movement buttons
 // ===============================================
-function updateMovementButtons(data) {
+function updateMovementButtons(roomData) {
+    const exits = roomData.exits || [];
+
     document.querySelectorAll(".arrow-btn").forEach(btn => {
         const dir = btn.getAttribute("data-dir");
 
