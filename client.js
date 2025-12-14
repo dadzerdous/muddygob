@@ -127,9 +127,11 @@ function routeMessage(data) {
             localStorage.setItem("mg_token", data.token);
             return;
 
-        case "player_state":
-            updatePlayerHUD(data.player);
-            return;
+case "player_state":
+    hideAuthUI();              // 🔑 switch UI mode
+    updatePlayerHUD(data.player);
+    return;
+
 
         case "room":
             renderRoom(data);
@@ -173,6 +175,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
