@@ -79,13 +79,14 @@ function updateMovementButtons(roomData) {
     document.querySelectorAll(".arrow-btn").forEach(btn => {
         const dir = btn.getAttribute("data-dir");
 
-        if (data.exits.includes(dir)) {
+        if (exits.includes(dir)) {
             btn.classList.remove("disabled");
         } else {
             btn.classList.add("disabled");
         }
     });
 }
+
 
 // ===============================================
 // Object inline action menus
