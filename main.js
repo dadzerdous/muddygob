@@ -44,9 +44,10 @@ document.getElementById("btn-login").onclick = () => showAuthModal("login");
 document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     btn.onclick = () => {
         const dir = btn.dataset.dir;
-        sendText("go " + dir);
+        sendText(dir);  // ← FIXED
     };
 });
+
 
 // -----------------------------------------
 // CONNECT TO SERVER
