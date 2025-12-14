@@ -4,7 +4,7 @@
 
 :root {
     --bg-page: #000000;
-    --bg-panel: rgba(0,0,0,0.55);
+    --bg-glass: rgba(0,0,0,0.35);
     --bg-panel-strong: #1a1333;
     --bg-input: #120c24;
 
@@ -27,9 +27,7 @@
     --exits-inactive: #555;
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -38,26 +36,16 @@ body {
     color: var(--text-main);
 
     background-color: var(--bg-page);
-
     background-image: url("images/default.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
+/* Chat Colors */
 .chat-you { color: #9ad1ff; font-weight: bold; }
 .chat-name { color: #ffddb3; font-weight: bold; }
 .chat-text { color: #ffffff; }
-
-/* ============================================================
-   CONNECTION STATUS
-   ============================================================ */
-.connection-status {
-    margin: 8px 0 0 0;
-    text-align: center;
-    font-size: 14px;
-    color: var(--text-muted);
-}
 
 /* ============================================================
    WELCOME SCREEN
@@ -67,7 +55,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 50px);
     text-align: center;
 }
 
@@ -98,7 +86,7 @@ button,
     background: var(--button-bg);
     color: var(--button-text);
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition: 0.15s ease;
     box-shadow: 0 0 8px rgba(0,0,0,0.6);
 }
 
@@ -111,46 +99,83 @@ button:hover,
 }
 
 /* ============================================================
-   GAME UI
+   TOP BAR
    ============================================================ */
-#game-ui { display: block; }
+#top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
 
-/* Exits block */
-.exits-block {
-    margin-top: 16px;
-    font-size: 20px;
-    color: var(--exits-active);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    padding: 6px 12px;
+    z-index: 9999;
+    border-bottom: 2px solid var(--border-main);
 }
 
-.exit-option { display: flex; align-items: center; margin: 4px 0; }
-.exit-option span { margin-left: 8px; }
+#connection-col {
+    font-size: 14px;
+    color: var(--text-muted);
+}
 
-.active-exit { color: var(--exits-active); font-weight: bold; }
-.inactive-exit { color: var(--exits-inactive); }
+#player-name-col {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-soft);
+}
+
+#hud-col {
+    display: flex;
+    gap: 12px;
+    font-size: 18px;
+}
+
+#hud-col div {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.hidden { display: none !important; }
 
 /* ============================================================
-   OUTPUT WRAPPER — ONLY SCROLL AREA
+   OUTPUT WRAPPER — middle scroll area only
    ============================================================ */
 #output-wrapper {
     position: fixed;
-    top: 60px;
-    bottom: 100px;
+    top: 50px;       /* under top bar */
+    bottom: 100px;   /* above input bar */
     left: 0;
     right: 0;
 
     overflow-y: auto;
     overflow-x: hidden;
 
-    background: var(--bg-panel);
-    backdrop-filter: blur(3px);
+    background: var(--bg-glass);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
     border-top: 2px solid var(--border-main);
     border-bottom: 2px solid var(--border-main);
+
+    padding: 0;
 }
 
 #output {
+    position: relative;
+    z-index: 5; /* ensure text is crisp */
     padding: 16px;
     padding-bottom: 40px;
-    padding-top: 10px;
 }
 
 /* ============================================================
@@ -161,19 +186,24 @@ button:hover,
     bottom: 0;
     left: 0;
     width: 100%;
+
     height: 100px;
+
     display: flex;
     align-items: center;
-    padding: 10px;
+    justify-content: center;
+    gap: 8px;
+
     background: var(--bg-panel-strong);
     border-top: 2px solid var(--border-main);
     z-index: 9999;
-           flex-direction: column;
-        justify-content: center;
+
+    padding: 10px;
+    flex-direction: column;
 }
 
 #input {
-    flex: 1;
+    width: 90%;
     padding: 8px;
     border-radius: 6px;
     border: 1px solid var(--border-main);
@@ -182,21 +212,20 @@ button:hover,
     font-size: 16px;
 }
 
-#input:focus {
-    outline: none;
-    border-color: var(--accent-soft);
-}
+#input:focus { outline: none; border-color: var(--accent-soft); }
 
 #send {
-    margin-left: 10px;
     padding: 8px 18px;
     border-radius: 6px;
     border: none;
+
     background: var(--accent-main);
     color: #000;
+
     cursor: pointer;
     font-weight: bold;
     font-size: 15px;
+
     box-shadow: 0 0 10px rgba(141,116,255,0.6);
 }
 
@@ -205,13 +234,13 @@ button:hover,
     transform: translateY(-1px);
 }
 
+/* Arrow keys */
 #input-buttons {
     display: flex;
+    gap: 12px;
     align-items: center;
-    gap: 8px;
 }
 
-/* Arrow keys */
 #arrow-keys {
     display: flex;
     flex-direction: column;
@@ -233,208 +262,14 @@ button:hover,
     border-radius: 6px;
 }
 
-@media (max-width: 600px) {
-    #arrow-keys { transform: scale(0.85); }
-}
-
-/* ============================================================
-   SYSTEM + ERROR TEXT
-   ============================================================ */
-.system-msg {
-    color: var(--system-msg);
-    margin: 4px 0;
-    font-style: italic;
-}
-
-.auth-error {
-    min-height: 18px;
-    margin: 6px 0 4px 0;
-    font-size: 0.8rem;
-    color: var(--error-color);
-    text-align: center;
-}
-
-/* ============================================================
-   SMOKY MODAL OVERLAY
-   ============================================================ */
-#modal-overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 50;
-
-    background:
-        radial-gradient(circle at 20% 20%, rgba(160,120,255,0.18), transparent 60%),
-        radial-gradient(circle at 80% 80%, rgba(40,0,80,0.65), rgba(0,0,0,0.95) 70%);
-    animation: smokeDrift 40s linear infinite;
-}
-
-@keyframes smokeDrift {
-    0% { background-position: 0% 0%, 100% 100%; }
-    50% { background-position: 10% 5%, 95% 90%; }
-    100% { background-position: 0% 0%, 100% 100%; }
-}
-
-/* ============================================================
-   AUTH MODAL
-   ============================================================ */
-#auth-modal {
-    min-width: 260px;
-    max-width: 360px;
-    padding: 20px 22px;
-
-    background: rgba(5, 3, 12, 0.88);
-    border-radius: 16px;
-    border: 1px solid var(--border-main);
-    box-shadow: 0 0 18px rgba(0,0,0,0.9), 0 0 24px var(--accent-main);
-    backdrop-filter: blur(7px);
-}
-
-#auth-modal h2 {
-    margin: 0 0 10px 0;
-    color: var(--text-main);
-    font-size: 1.3rem;
-    text-align: center;
-    text-shadow: 0 0 8px var(--accent-main);
-}
-
-.char-sheet {
-    background: var(--bg-panel);
-    border: 2px solid var(--border-main);
-    border-radius: 12px;
-    padding: 25px;
-    color: var(--text-main);
-}
-
-.char-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 12px 0;
-}
-
-.char-row span { width: 30%; font-size: 1rem; }
-
-.char-row input {
-    flex: 1;
-    padding: 6px 8px;
-    background: var(--bg-input);
-    color: var(--text-main);
-    border: 1px solid var(--border-main);
-    border-radius: 6px;
-}
-
-.char-choice {
-    flex: 1;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.hidden { display: none !important; }
-
-/* ============================================================
-   MOBILE BOOST
-   ============================================================ */
-@media (max-width: 600px) {
-    #auth-modal { width: 85%; padding: 20px; }
-    #output     { font-size: 20px; }
-    #input      { font-size: 18px; padding: 12px; }
-
-    button,
-    .race-btn,
-    .pronoun-btn {
-        font-size: 22px;
-        padding: 18px 20px;
-    }
-
-    h1 { font-size: 32px; }
-}
-
-/* ============================================================
-   TOP BAR
-   ============================================================ */
-#top-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 50px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(4px);
-    padding: 6px 12px;
-    z-index: 9999;
-    border-bottom: 2px solid var(--border-main);
-}
-
-#connection-col {
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-#player-name-col {
-    flex: 1;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--text-soft);
+.arrow-btn.disabled {
+    opacity: 0.3;
     pointer-events: none;
 }
-
-#hud-col {
-    display: flex;
-    gap: 12px;
-    font-size: 18px;
-}
-
-#hud-col div {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-
-#connection-status {
-    font-size: 14px;
-    color: #ccc;
-    margin: 0;
-}
-
-#top-bar.hidden { display: none !important; }
 
 /* ============================================================
    ROOM CONTENT
    ============================================================ */
-.room-players {
-    margin-top: 6px;
-    font-size: 0.95rem;
-    color: var(--text-soft);
-}
-
-.room-player::before { content: "• "; }
-
-.objects {
-    margin-top: 10px;
-    padding: 10px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 6px;
-}
-
-.object-entry { margin-bottom: 8px; }
-.object-emoji { font-size: 1.2em; margin-right: 4px; }
-
-.obj-btn {
-    margin: 4px 4px 4px 0;
-    padding: 2px 6px;
-    font-size: 0.85em;
-}
-
 .obj {
     cursor: pointer;
     color: #ffd27d;
@@ -457,8 +292,25 @@ button:hover,
     border-radius: 4px;
 }
 
-.disabled {
-    opacity: 0.3;
-    pointer-events: none;
+.system-msg {
+    color: var(--system-msg);
+    margin: 4px 0;
+    font-style: italic;
 }
 
+/* ============================================================
+   MOBILE BOOST
+   ============================================================ */
+@media (max-width: 600px) {
+
+    #input { font-size: 18px; padding: 12px; }
+
+    button,
+    .race-btn,
+    .pronoun-btn {
+        font-size: 22px;
+        padding: 18px 20px;
+    }
+
+    #arrow-keys { transform: scale(0.85); }
+}
