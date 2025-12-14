@@ -237,7 +237,7 @@ button:hover,
 /* Arrow keys */
 #input-buttons {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -245,7 +245,7 @@ button:hover,
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 
 #arrow-keys .arrow-row {
@@ -314,4 +314,5 @@ button:hover,
 
     #arrow-keys { transform: scale(0.85); }
 }
+
 
