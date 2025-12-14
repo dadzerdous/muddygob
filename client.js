@@ -118,6 +118,10 @@ function routeMessage(data) {
         case "system":
             renderSystem(data.msg);
             break;
+            case "player_state":
+    updatePlayerHUD(data.player);
+    return;
+
             
             case "session_token":
     localStorage.setItem("mg_token", data.token);
@@ -166,6 +170,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
