@@ -38,10 +38,14 @@ ws.onopen = () => {
     }, 20000);
 
     // 🔥 Attempt auto-resume if we have a token
-    const token = localStorage.getItem("mg_token");
-    if (token) {
-        ws.send(JSON.stringify({ type: "resume", token }));
-    }
+const token = localStorage.getItem("mg_token");
+
+// Only resume if token exists AND user is not on the welcome screen
+if (token) {
+    ws.send(JSON.stringify({ type: "resume", token }));
+}
+
+
 };
 
 
@@ -162,6 +166,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
