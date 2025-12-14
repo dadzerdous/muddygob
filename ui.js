@@ -83,19 +83,27 @@ export function showAuthModal(mode) {
     }
 }
 
-export function hideAuthUI() {
+export function hideAuthUI(playerData) {
+    // Hide all menus
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.add("hidden");
+
+    // Show the game UI
     gameUI.classList.remove("hidden");
 
-    // apply race theme AFTER character is actually in the game
+    // Show the top bar + HUD
+    document.getElementById("top-bar").classList.remove("hidden");
+    document.getElementById("hud-col").classList.remove("hidden");
+
+    // Set player name if we have it
+    if (playerData?.name) {
+        document.getElementById("player-name-col").textContent = playerData.name;
+    }
+
+    // Apply race theme (your feature)
     applyThemeForRace(chosenRace || "default");
-
-    // show HUD
-document.getElementById("top-bar").classList.remove("hidden");
-
-
 }
+
 
 
 /* ============================================================
