@@ -61,9 +61,11 @@ function applyThemeForRace(race) {
    ============================================================ */
 export function showAuthModal(mode) {
     authMode = mode;
-    authError.textContent   = "";
-    usernameHint.textContent = "";
-    passwordHint.textContent = "";
+authError.textContent = "";
+
+if (usernameHint) usernameHint.textContent = "";
+if (passwordHint) passwordHint.textContent = "";
+
 
     authUsername.value = "";
     authPassword.value = "";
