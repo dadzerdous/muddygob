@@ -4,6 +4,8 @@
 
 import { hideAuthUI } from "./ui.js";
 import { renderRoom, renderSystem } from "./render.js";
+import { updatePlayerHUD } from "./hudUI.js";
+
 
 // -------------------------------------------------
 // CONNECT WEBSOCKET
@@ -115,28 +117,28 @@ export function sendText(text) {
 // -------------------------------------------------
 function routeMessage(data) {
     switch (data.type) {
+
         case "system":
             renderSystem(data.msg);
-            break;
-            case "player_state":
-    updatePlayerHUD(data.player);
-    return;
+            return;
 
-            
-            case "session_token":
-    localStorage.setItem("mg_token", data.token);
-    return;
+        case "session_token":
+            localStorage.setItem("mg_token", data.token);
+            return;
 
-case "room":
-    hideAuthUI(data.player);   // <-- send player data
-    renderRoom(data);
-    break;
+        case "player_state":
+            updatePlayerHUD(data.player);
+            return;
 
+        case "room":
+            renderRoom(data);
+            return;
 
         default:
             console.warn("Unknown server packet:", data);
     }
 }
+
 
 // -------------------------------------------------
 // EXPORTED FOR UI
@@ -170,6 +172,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
