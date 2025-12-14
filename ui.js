@@ -98,12 +98,15 @@ export function hideAuthUI(playerData) {
     document.getElementById("hud-col").classList.remove("hidden");
 
     // Set player name if we have it
-    if (playerData?.name) {
-        document.getElementById("player-name-col").textContent = playerData.name;
-    }
+if (playerData?.name && playerData?.race && playerData?.pronoun) {
+    document.getElementById("player-name-col").textContent =
+        `${playerData.name}@${playerData.race}.${playerData.pronoun}`;
+}
+
 
     // Apply race theme (your feature)
-    applyThemeForRace(chosenRace || "default");
+    applyThemeForRace(playerData?.race || chosenRace || "default");
+
 }
 
 
