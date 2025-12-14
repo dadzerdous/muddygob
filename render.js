@@ -55,13 +55,14 @@ document.getElementById("player-name-col").textContent =
     // -----------------------------------------------
     // EXITS
     // -----------------------------------------------
-    out.innerHTML += `<div class="exits"><strong>Exits:</strong> ${data.exits.join(", ")}</div>`;
+    out.innerHTML += `<div class="exits-block"><strong>Exits:</strong> ${data.exits.join(", ")}</div>`;
+
 
     // -----------------------------------------------
     // PLAYERS
     // -----------------------------------------------
     if (data.players?.length) {
-        out.innerHTML += `<div class="players"><strong>Players here:</strong><br>${data.players
+        out.innerHTML += `<div class="room-players"><strong>Players here:</strong><br>${data.players
             .map(n => `• ${n}`).join("<br>")}</div>`;
     }
 
