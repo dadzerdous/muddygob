@@ -85,29 +85,12 @@ if (passwordHint) passwordHint.textContent = "";
     }
 }
 
-export function hideAuthUI(playerData) {
-    // Hide all menus
+export function hideAuthUI() {
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.add("hidden");
-
-    // Show the game UI
     gameUI.classList.remove("hidden");
-
-    // Show the top bar + HUD
-    document.getElementById("top-bar").classList.remove("hidden");
-    document.getElementById("hud-col").classList.remove("hidden");
-
-    // Set player name if we have it
-if (playerData?.name && playerData?.race && playerData?.pronoun) {
-    document.getElementById("player-name-col").textContent =
-        `${playerData.name}@${playerData.race}.${playerData.pronoun}`;
 }
 
-
-    // Apply race theme (your feature)
-    applyThemeForRace(playerData?.race || chosenRace || "default");
-
-}
 
 
 
