@@ -129,9 +129,8 @@ button:hover,
 #player-name-col {
     flex: 1;
     text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--text-soft);
+    font-size: 14px;
+        color: var(--text-soft);
 }
 
 #hud-col {
@@ -314,5 +313,6 @@ button:hover,
 
     #arrow-keys { transform: scale(0.85); }
 }
+
 
 
