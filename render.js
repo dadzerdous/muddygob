@@ -13,12 +13,6 @@ export function renderSystem(msg) {
 export function renderRoom(data) {
     const out = document.getElementById("output");
     out.innerHTML = "";
-    document.getElementById("top-bar").classList.remove("hidden");
-document.getElementById("hud-col").classList.remove("hidden");
-
-document.getElementById("player-name-col").textContent =
-    data.playerName || data.name || "—";
-
 
     // Title
     out.innerHTML += `<h2>${data.title}</h2>`;
