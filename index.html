@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MuddyGob – Dark Fantasy MUD</title>
-    <link rel="stylesheet" href="style.css">
-    <link id="theme-css" rel="stylesheet" href="themes/default.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
 <body class="theme-default">
 
 <!-- =======================================
-     TOP BAR
+     TOP BAR (fixed)
 ======================================= -->
 <div id="top-bar" class="hidden">
     <div id="connection-col">
         <span id="connection-status">Connecting...</span>
-<div id="players-online" style="font-size: 0.9em; opacity: 0.8;"></div>
+        <div id="players-online" style="font-size: 0.9em; opacity: 0.8;"></div>
     </div>
-  
-
 
     <div id="player-name-col">—</div>
 
@@ -30,9 +18,7 @@
     </div>
 </div>
 
-<div id="output-wrapper">
-    <div id="output"></div>
-</div>
+
 <!-- =======================================
      WELCOME SCREEN
 ======================================= -->
@@ -48,14 +34,14 @@
 
 
 <!-- =======================================
-     GAME SCREEN
+     GAME UI
 ======================================= -->
 <div id="game-ui" class="hidden">
 
+    <!-- ⭐ THIS IS THE ONLY output-wrapper ⭐ -->
     <div id="output-wrapper">
-    <div id="output"></div>
-</div>
-
+        <div id="output"></div>
+    </div>
 
     <div id="input-bar">
         <input id="input" type="text" placeholder="Try typing 𝘩𝘦𝘭𝘱" autocomplete="off">
@@ -128,21 +114,3 @@
 
 <script type="module" src="main.js?v=5"></script>
 </body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
