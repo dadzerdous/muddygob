@@ -1,8 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MuddyGob – Dark Fantasy MUD</title>
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- THEME SWITCHER (this was missing!) -->
+    <link id="theme-css" rel="stylesheet" href="themes/default.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+
 <body class="theme-default">
 
-<!-- =======================================
-     TOP BAR (fixed)
-======================================= -->
+<!-- =====================================================
+     TOP BAR (ALWAYS VISIBLE AT TOP)
+===================================================== -->
 <div id="top-bar" class="hidden">
     <div id="connection-col">
         <span id="connection-status">Connecting...</span>
@@ -19,9 +35,10 @@
 </div>
 
 
-<!-- =======================================
+
+<!-- =====================================================
      WELCOME SCREEN
-======================================= -->
+===================================================== -->
 <div id="welcome-screen" class="screen">
     <h1>M U D D Y G O B</h1>
     <p>A dark fantasy multiplayer story v0.0.21</p>
@@ -33,22 +50,32 @@
 </div>
 
 
-<!-- =======================================
-     GAME UI
-======================================= -->
+
+<!-- =====================================================
+     GAME UI (Shown after login)
+===================================================== -->
 <div id="game-ui" class="hidden">
 
-    <!-- ⭐ THIS IS THE ONLY output-wrapper ⭐ -->
+    <!-- ⭐ ONLY ONE OUTPUT WRAPPER (scrolls!) ⭐ -->
     <div id="output-wrapper">
         <div id="output"></div>
     </div>
 
+    <!-- =================================================
+         INPUT BAR (fixed to bottom)
+    ================================================== -->
     <div id="input-bar">
-        <input id="input" type="text" placeholder="Try typing 𝘩𝘦𝘭𝘱" autocomplete="off">
+
+        <input id="input"
+               type="text"
+               placeholder="Try typing 𝘩𝘦𝘭𝘱"
+               autocomplete="off">
 
         <div id="input-buttons">
+
             <button id="send">Send</button>
 
+            <!-- Arrow Keys -->
             <div id="arrow-keys">
                 <button class="arrow-btn" data-dir="north">↑</button>
                 <div class="arrow-row">
@@ -63,9 +90,10 @@
 </div>
 
 
-<!-- =======================================
+
+<!-- =====================================================
      AUTH MODAL
-======================================= -->
+===================================================== -->
 <div id="modal-overlay" class="hidden">
     <div id="auth-modal" class="char-sheet">
 
@@ -75,7 +103,6 @@
             <span>Name:</span>
             <input id="auth-username" type="text" autocomplete="off">
         </div>
-        <div id="username-hint" class="auth-hint"></div>
 
         <div class="char-row">
             <span>Race:</span>
@@ -100,7 +127,6 @@
             <span>Password:</span>
             <input id="auth-password" type="password" autocomplete="off">
         </div>
-        <div id="password-hint" class="auth-hint"></div>
 
         <p id="auth-error" class="auth-error"></p>
 
@@ -112,5 +138,13 @@
     </div>
 </div>
 
-<script type="module" src="main.js?v=5"></script>
+
+
+<!-- =====================================================
+     MAIN JS
+===================================================== -->
+<script type="module" src="main.js?v=6"></script>
+
 </body>
+</html>
+
