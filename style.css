@@ -191,7 +191,7 @@ button:hover,
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 8px;
 
     background: var(--bg-panel-strong);
@@ -199,7 +199,7 @@ button:hover,
     z-index: 9999;
 
     padding: 10px;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 #input {
@@ -314,3 +314,4 @@ button:hover,
 
     #arrow-keys { transform: scale(0.85); }
 }
+
