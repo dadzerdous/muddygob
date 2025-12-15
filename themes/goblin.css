@@ -23,3 +23,7 @@
     --exits-active: #f0dd80;
     --exits-inactive: #4f5a33;
 }
+.action-btn {
+    background: #3a5f3a;
+    color: #d6ffd6;
+}
