@@ -16,21 +16,48 @@ export function renderSystem(msg) {
 }
 
 // -----------------------------------------------
+// ACTION BAR HELPERS (DEFINE FIRST)
+// -----------------------------------------------
+function hideActionBar() {
+    if (!actionBar) return;
+    actionBar.classList.add("hidden");
+    actionBar.innerHTML = "";
+}
+
+function showActionBar(objectName, actions) {
+    if (!actionBar) return;
+
+    actionBar.innerHTML = "";
+
+    actions.forEach(action => {
+        const btn = document.createElement("button");
+        btn.className = "action-btn";
+        btn.textContent = action;
+
+        btn.onclick = () => {
+            sendText(`${action} ${objectName}`);
+            hideActionBar();
+        };
+
+        actionBar.appendChild(btn);
+    });
+
+    actionBar.classList.remove("hidden");
+}
+
+// -----------------------------------------------
 // ROOM RENDER
 // -----------------------------------------------
 export function renderRoom(data) {
     const out = document.getElementById("output");
     out.innerHTML = "";
 
-    // Hide action bar on room change
+    // Always reset action bar on room change
     hideActionBar();
 
     // Title
     out.innerHTML += `<h2>${data.title}</h2>`;
 
-    // -------------------------------------------
-    // DESCRIPTION with clickable objects
-    // -------------------------------------------
     const objects = data.objects || [];
     const lines = Array.isArray(data.desc) ? data.desc : [data.desc];
 
@@ -54,18 +81,14 @@ export function renderRoom(data) {
         out.innerHTML += `<p>${processed}</p>`;
     });
 
-    // -------------------------------------------
-    // EXITS
-    // -------------------------------------------
+    // Exits
     out.innerHTML += `
         <div class="exits-block">
             <strong>Exits:</strong> ${data.exits.join(", ")}
         </div>
     `;
 
-    // -------------------------------------------
-    // PLAYERS
-    // -------------------------------------------
+    // Players
     if (data.players?.length) {
         out.innerHTML += `
             <div class="room-players">
@@ -80,5 +103,25 @@ export function renderRoom(data) {
 }
 
 // -----------------------------------------------
-// ACTION BAR
-// ---------------------------------
+// OBJECT CLICK → ACTION BAR
+// -----------------------------------------------
+document.addEventListener("click", e => {
+    if (!e.target.classList.contains("obj")) return;
+
+    const name = e.target.dataset.name;
+    const actions = JSON.parse(e.target.dataset.actions || "[]");
+
+    showActionBar(name, actions);
+});
+
+// -----------------------------------------------
+// DIM MOVEMENT BUTTONS
+// -----------------------------------------------
+function updateMovementButtons(roomData) {
+    const exits = roomData.exits || [];
+
+    document.querySelectorAll(".arrow-btn").forEach(btn => {
+        const dir = btn.getAttribute("data-dir");
+        btn.classList.toggle("disabled", !exits.includes(dir));
+    });
+}
