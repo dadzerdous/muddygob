@@ -17,3 +17,16 @@ export function updatePlayerHUD(player) {
     if (hudCol) hudCol.classList.remove("hidden");
     if (topBar) topBar.classList.remove("hidden");
 }
+export function updateHUD({ level, energy, stamina, interactions }) {
+    if (level !== undefined)
+        document.getElementById("hud-level").textContent = `🧠 ${level}`;
+
+    if (energy !== undefined)
+        document.getElementById("hud-energy").textContent = `⚡ ${energy}%`;
+
+    if (stamina !== undefined)
+        document.getElementById("hud-stamina").textContent = `💪 ${stamina}%`;
+
+    if (interactions !== undefined)
+        document.getElementById("hud-interact").textContent = `❗ ${interactions}`;
+}
