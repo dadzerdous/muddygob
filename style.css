@@ -147,6 +147,22 @@ button:hover,
 
 .hidden { display: none !important; }
 
+#hud-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    gap: 4px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.hud-cell {
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+}
+
+
 /* ============================================================
    OUTPUT WRAPPER — middle scroll area only
    ============================================================ */
@@ -313,6 +329,7 @@ button:hover,
 
     #arrow-keys { transform: scale(0.85); }
 }
+
 
 
 
