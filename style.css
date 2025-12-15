@@ -331,5 +331,38 @@ button:hover,
 }
 
 
+/* ================================
+   ACTION BAR
+================================ */
+#action-bar {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Hidden state */
+#action-bar.hidden {
+    display: none;
+}
+
+/* Action buttons */
+.action-btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border: none;
+    opacity: 0.9;
+}
+
+.action-btn:hover {
+    opacity: 1;
+}
+
+
+
 
 
