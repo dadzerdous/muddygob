@@ -1,161 +1,121 @@
 // ===============================================
-// client.js – Networking + Message Routing
+// client.js – Networking + Message Routing (CLEAN)
 // ===============================================
 
+console.log("🌐 client.js loaded");
 
 import { renderRoom, renderSystem } from "./render.js";
 import { updatePlayerHUD } from "./hudUI.js";
 import {
-  hideAuthUI,
-  applyThemeForRace,
-  bindAuthActions
+    hideAuthUI,
+    applyThemeForRace,
+    bindAuthActions
 } from "./ui.js";
 
-bindAuthActions(beginCreateAccount, attemptLogin);
-
-
-
-
 // -------------------------------------------------
-// CONNECT WEBSOCKET
+// WEBSOCKET
 // -------------------------------------------------
-// ===============================================
-// WebSocket with Auto-Reconnect + Heartbeat
-// ===============================================
-
 let ws = null;
-let reconnectDelay = 2000;   // 2 seconds
-let heartbeatInterval = null;
+let reconnectDelay = 2000;
 
+// -------------------------------------------------
+// INIT
+// -------------------------------------------------
 export function initWebSocket(url) {
-    console.log("📱 TOKEN FROM STORAGE:", localStorage.getItem("mg_token"));
+    console.log("🔌 initWebSocket:", url);
 
     ws = new WebSocket(url);
 
     const statusEl = document.getElementById("connection-status");
-    const playersOnlineEl = document.getElementById("players-online");
 
-    statusEl.textContent = "Connecting...";
+    ws.onopen = () => {
+        console.log("✅ WS connected");
+        if (statusEl) statusEl.textContent = "✓ Connected";
 
-ws.onopen = () => {
-    statusEl.textContent = "✓ Connected";
-
-    // Heartbeat
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: "ping" }));
+        const token = localStorage.getItem("mg_token");
+        if (token) {
+            console.log("🔁 resume with token");
+            ws.send(JSON.stringify({ type: "resume", token }));
         }
-    }, 20000);
-
-    // 🔥 Attempt auto-resume if we have a token
-const token = localStorage.getItem("mg_token");
-
-// Only resume if token exists AND user is not on the welcome screen
-if (token) {
-    ws.send(JSON.stringify({ type: "resume", token }));
-}
-
-
-};
-
-
-    ws.onerror = () => {
-        statusEl.textContent = "⚠ Connection Error";
     };
 
     ws.onclose = () => {
-        statusEl.textContent = "✖ Disconnected";
-        if (playersOnlineEl) playersOnlineEl.textContent = "";
-
-        // Auto-reconnect
+        console.warn("❌ WS disconnected");
+        if (statusEl) statusEl.textContent = "✖ Disconnected";
         setTimeout(() => initWebSocket(url), reconnectDelay);
     };
 
-ws.onmessage = (event) => {
-    const raw = event.data;
+    ws.onerror = err => {
+        console.error("⚠ WS error", err);
+    };
 
-    if (raw === "pong") return;
+    ws.onmessage = e => {
+        const raw = e.data;
+        if (raw === "pong") return;
 
-    // Try to parse JSON
-    let data;
-    try {
-        data = JSON.parse(raw);
-    } catch {
-        // Raw plaintext message
-        return renderSystem(raw);
-    }
-
-    // Handle JSON packets
-    switch (data.type) {
-        case "players_online":
-            if (playersOnlineEl)
-                playersOnlineEl.textContent = `Players Online: ${data.count}`;
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch {
+            renderSystem(raw);
             return;
+        }
 
-        case "system":
-        case "session_token":
-        case "room":
-            case "player_state": 
-            return routeMessage(data);
-
-        default:
-            console.warn("Unknown packet:", data);
-    }
-};
-
+        console.log("📥 packet:", data);
+        routeMessage(data);
+    };
 }
 
-
 // -------------------------------------------------
-// SEND JSON + TEXT
+// SENDERS
 // -------------------------------------------------
 export function sendJSON(obj) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    if (ws?.readyState === WebSocket.OPEN) {
+        console.log("📤 sendJSON:", obj);
         ws.send(JSON.stringify(obj));
     }
 }
 
 export function sendText(text) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    if (ws?.readyState === WebSocket.OPEN) {
+        console.log("📤 sendText:", text);
         ws.send(text);
     }
 }
 
 // -------------------------------------------------
-// ROUTE SERVER PACKETS
+// ROUTER
 // -------------------------------------------------
 function routeMessage(data) {
     switch (data.type) {
 
         case "system":
             renderSystem(data.msg);
-            return;
+            break;
 
         case "session_token":
+            console.log("💾 token stored");
             localStorage.setItem("mg_token", data.token);
-            return;
+            break;
 
-case "player_state":
-    hideAuthUI();                     // switch to game UI
-    applyThemeForRace(data.player.race); // ✅ APPLY THEME HERE
-    updatePlayerHUD(data.player);
-    return;
-
-
+        case "player_state":
+            console.log("🎭 player_state received");
+            hideAuthUI();
+            applyThemeForRace(data.player.race);
+            updatePlayerHUD(data.player);
+            break;
 
         case "room":
             renderRoom(data);
-            return;
+            break;
 
         default:
-            console.warn("Unknown server packet:", data);
+            console.warn("❓ unknown packet", data);
     }
 }
 
-
 // -------------------------------------------------
-// EXPORTED FOR UI
+// AUTH API (called by ui.js)
 // -------------------------------------------------
 export function beginCreateAccount(name, pass, race, pronoun) {
     sendJSON({
@@ -176,30 +136,16 @@ export function attemptLogin(loginId, password) {
 }
 
 // -------------------------------------------------
-// MOVEMENT CONTROLS
+// BIND UI CALLBACKS
+// -------------------------------------------------
+bindAuthActions(beginCreateAccount, attemptLogin);
+
+// -------------------------------------------------
+// MOVEMENT KEYS
 // -------------------------------------------------
 document.addEventListener("keydown", e => {
-    switch (e.key) {
-        case "ArrowUp":    sendText("move north"); break;
-        case "ArrowDown":  sendText("move south"); break;
-        case "ArrowLeft":  sendText("move west"); break;
-        case "ArrowRight": sendText("move east"); break;
-    }
+    if (e.key === "ArrowUp") sendText("move north");
+    if (e.key === "ArrowDown") sendText("move south");
+    if (e.key === "ArrowLeft") sendText("move west");
+    if (e.key === "ArrowRight") sendText("move east");
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
