@@ -5,6 +5,7 @@
 import { hideAuthUI } from "./ui.js";
 import { renderRoom, renderSystem } from "./render.js";
 import { updatePlayerHUD } from "./hudUI.js";
+import { applyThemeForRace } from "./ui.js";
 
 
 // -------------------------------------------------
@@ -128,9 +129,11 @@ function routeMessage(data) {
             return;
 
 case "player_state":
-    hideAuthUI();              // 🔑 switch UI mode
+    hideAuthUI();                     // switch to game UI
+    applyThemeForRace(data.player.race); // ✅ APPLY THEME HERE
     updatePlayerHUD(data.player);
     return;
+
 
 
         case "room":
@@ -175,6 +178,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
