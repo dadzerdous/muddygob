@@ -35,8 +35,7 @@ const RACE_PRONOUNS = {
     elf:    ["he", "she"]
 };
 const body = document.body;
-
-function applyThemeForRace(race) {
+export function applyThemeForRace(race) {
     const themeLink = document.getElementById("theme-css");
 
     switch (race) {
@@ -51,10 +50,9 @@ function applyThemeForRace(race) {
             break;
         default:
             themeLink.href = "themes/default.css";
-      export function applyThemeForRace(race) {
-
     }
 }
+
 
 
 
