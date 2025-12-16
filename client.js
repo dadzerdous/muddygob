@@ -2,7 +2,7 @@
 // client.js – Networking + Message Routing
 // ===============================================
 
-import { hideAuthUI } from "./ui.js";
+
 import { renderRoom, renderSystem } from "./render.js";
 import { updatePlayerHUD } from "./hudUI.js";
 import { hideAuthUI, applyThemeForRace } from "./ui.js";
@@ -179,6 +179,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
