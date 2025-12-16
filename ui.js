@@ -35,8 +35,14 @@ const RACE_PRONOUNS = {
     elf:    ["he", "she"]
 };
 const body = document.body;
+
+// ===============================================
+// THEME HANDLER (MUST BE TOP-LEVEL)
+// ===============================================
+
 export function applyThemeForRace(race) {
     const themeLink = document.getElementById("theme-css");
+    if (!themeLink) return;
 
     switch (race) {
         case "goblin":
@@ -52,6 +58,7 @@ export function applyThemeForRace(race) {
             themeLink.href = "themes/default.css";
     }
 }
+
 
 
 
