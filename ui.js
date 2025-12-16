@@ -1,54 +1,24 @@
- // ===============================================
-// ui.js – Character Sheet Authentication UI
 // ===============================================
-// ui.js
+// ui.js – Authentication UI + Themes (CLEAN)
+// ===============================================
 
+console.log("🧩 ui.js loaded");
 
-// These are CALLBACKS (set later)
+// -------------------------------------------------
+// CALLBACKS (wired by client.js)
+// -------------------------------------------------
 let onCreate = null;
-let onLogin = null;
+let onLogin  = null;
 
-// CREATE
-if (authMode === "create") {
-    if (!chosenRace || !chosenPronoun) {
-        authError.textContent = "Pick race and pronouns first.";
-        return;
-    }
-    if (!name || !pass) {
-        authError.textContent = "Missing name or key phrase.";
-        return;
-    }
-
-    if (onCreate) {
-        onCreate(name, pass, chosenRace, chosenPronoun);
-    }
-    return;
+export function bindAuthActions(createFn, loginFn) {
+    console.log("🔗 bindAuthActions()");
+    onCreate = createFn;
+    onLogin  = loginFn;
 }
 
-// LOGIN
-if (!chosenRace || !chosenPronoun) {
-    authError.textContent = "Select race and pronouns.";
-    return;
-}
-if (!name || !pass) {
-    authError.textContent = "Enter name and key phrase.";
-    return;
-}
-
-const loginId =
-    name.toLowerCase() +
-    "@" +
-    chosenRace +
-    "." +
-    chosenPronoun;
-
-if (onLogin) {
-    onLogin(loginId, pass);
-}
-
-
-
-/* DOM ELEMENTS */
+// -------------------------------------------------
+// DOM ELEMENTS
+// -------------------------------------------------
 const welcomeScreen  = document.getElementById("welcome-screen");
 const modalOverlay   = document.getElementById("modal-overlay");
 const gameUI         = document.getElementById("game-ui");
@@ -66,153 +36,86 @@ const pronounUI      = document.getElementById("pronoun-select");
 const btnAuthConfirm = document.getElementById("auth-confirm");
 const btnAuthCancel  = document.getElementById("auth-cancel");
 
-/* STATE */
-let authMode       = null; // "create" | "login"
-let createStep     = null; // "race" | "pronoun" | "credentials"
-let chosenRace     = null;
-let chosenPronoun  = null;
+// -------------------------------------------------
+// STATE
+// -------------------------------------------------
+let authMode      = null; // "create" | "login"
+let chosenRace    = null;
+let chosenPronoun = null;
 
-/* PRONOUN RULES */
+// -------------------------------------------------
+// PRONOUN RULES
+// -------------------------------------------------
 const RACE_PRONOUNS = {
     goblin: ["they", "it"],
     human:  ["he", "she", "they", "it"],
     elf:    ["he", "she"]
 };
-const body = document.body;
 
-// ===============================================
-// THEME HANDLER (MUST BE TOP-LEVEL)
-// ===============================================
-
+// -------------------------------------------------
+// THEMES
+// -------------------------------------------------
 export function applyThemeForRace(race) {
+    console.log("🎨 applyThemeForRace:", race);
+
     const themeLink = document.getElementById("theme-css");
-    if (!themeLink) return;
+    if (!themeLink) {
+        console.warn("⚠ theme-css <link> missing");
+        return;
+    }
 
     switch (race) {
-        case "goblin":
-            themeLink.href = "themes/goblin.css";
-            break;
-        case "elf":
-            themeLink.href = "themes/elven.css";
-            break;
-        case "human":
-            themeLink.href = "themes/human.css";
-            break;
-        default:
-            themeLink.href = "themes/default.css";
+        case "goblin": themeLink.href = "themes/goblin.css"; break;
+        case "elf":    themeLink.href = "themes/elven.css"; break;
+        case "human":  themeLink.href = "themes/human.css"; break;
+        default:       themeLink.href = "themes/default.css";
     }
 }
 
-
-
-
-
-
-/* ============================================================
-   PUBLIC — SHOW / HIDE AUTH UI
-   ============================================================ */
+// -------------------------------------------------
+// SHOW / HIDE AUTH UI
+// -------------------------------------------------
 export function showAuthModal(mode) {
-    authMode = mode;
-authError.textContent = "";
+    console.log("🪟 showAuthModal:", mode);
 
-if (usernameHint) usernameHint.textContent = "";
-if (passwordHint) passwordHint.textContent = "";
+    authMode      = mode;
+    chosenRace    = null;
+    chosenPronoun = null;
 
+    authError.textContent = "";
+    usernameHint.textContent = "";
+    passwordHint.textContent = "";
 
     authUsername.value = "";
     authPassword.value = "";
-
-    chosenRace    = null;
-    chosenPronoun = null;
-    createStep    = null;
 
     welcomeScreen.classList.add("hidden");
     modalOverlay.classList.remove("hidden");
     gameUI.classList.add("hidden");
 
-    if (mode === "create") {
-        setupCreateUI();
-    } else {
-        setupLoginUI();
-    }
+    authTitle.textContent = mode === "create"
+        ? "Create a Being"
+        : "Login";
+
+    raceUI.classList.remove("hidden");
+    pronounUI.classList.remove("hidden");
+
+    authUsername.parentElement.style.display = "block";
+    authPassword.parentElement.style.display = "block";
+    btnAuthConfirm.style.display = "inline-block";
 }
 
 export function hideAuthUI() {
+    console.log("🚪 hideAuthUI()");
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.add("hidden");
     gameUI.classList.remove("hidden");
 }
 
-
-
-
-/* ============================================================
-   CREATE MODE (step-by-step)
-   ============================================================ */
-function setupCreateUI() {
-    authTitle.textContent = "Create a Being";
-
-    createStep = "race";
-    chosenRace = null;
-    chosenPronoun = null;
-
-    // Step 1: race only
-    raceUI.classList.remove("hidden");
-    pronounUI.classList.add("hidden");
-
-    authUsername.parentElement.style.display = "none";
-    authPassword.parentElement.style.display = "none";
-    btnAuthConfirm.style.display = "none";
-}
-
-function goToPronounStep() {
-    createStep = "pronoun";
-
-    authTitle.textContent = "Choose Pronouns";
-
-    raceUI.classList.add("hidden");
-    pronounUI.classList.remove("hidden");
-
-    filterPronounButtons(chosenRace);
-}
-
-function goToCredentialStep() {
-    createStep = "credentials";
-
-    pronounUI.classList.add("hidden");
-
-    authTitle.textContent = "Name This Being";
-
-    authUsername.parentElement.style.display = "block";
-    authPassword.parentElement.style.display = "block";
-    btnAuthConfirm.style.display = "inline-block";
-
-    authUsername.focus();
-}
-
-/* ============================================================
-   LOGIN MODE (one screen with race + pronoun)
-   ============================================================ */
-function setupLoginUI() {
-    authTitle.textContent = "Login";
-
-    createStep = null;
-
-    raceUI.classList.remove("hidden");
-    pronounUI.classList.remove("hidden");
-
-    authUsername.parentElement.style.display = "block";
-    authPassword.parentElement.style.display = "block";
-    btnAuthConfirm.style.display = "inline-block";
-
-    authUsername.placeholder = "Character name";
-    usernameHint.textContent = "Choose race + pronouns, then enter key phrase.";
-}
-
-/* ============================================================
-   RACE + PRONOUN BUTTONS
-   ============================================================ */
-function filterPronounButtons(race) {
+// -------------------------------------------------
+// RACE / PRONOUN SELECTION
+// -------------------------------------------------
+function filterPronouns(race) {
     const allowed = RACE_PRONOUNS[race] || [];
     document.querySelectorAll(".pronoun-btn").forEach(btn => {
         btn.style.display = allowed.includes(btn.dataset.pronoun)
@@ -224,149 +127,55 @@ function filterPronounButtons(race) {
 document.querySelectorAll(".race-btn").forEach(btn => {
     btn.onclick = () => {
         chosenRace = btn.dataset.race;
-
-        if (!chosenRace) return;
-
-        if (authMode === "create") {
-            // step-by-step flow
-            goToPronounStep();
-        } else {
-            // login: keep everything on screen, just filter pronouns
-            filterPronounButtons(chosenRace);
-        }
+        console.log("🧬 race selected:", chosenRace);
+        filterPronouns(chosenRace);
     };
 });
 
 document.querySelectorAll(".pronoun-btn").forEach(btn => {
     btn.onclick = () => {
         chosenPronoun = btn.dataset.pronoun;
-
-        if (authMode === "create") {
-            goToCredentialStep();
-        } else {
-            // login: just let them type password now
-            authPassword.focus();
-        }
+        console.log("🗣 pronoun selected:", chosenPronoun);
     };
 });
 
-/* ============================================================
-   LIVE VALIDATION — NAME + PASSWORD
-   ============================================================ */
-authUsername.addEventListener("input", () => {
-    let val = authUsername.value.trim();
-
-    // LOGIN: no auto-formatting, just show preview
-    if (authMode === "login") {
-        usernameHint.style.color = "#ccc";
-        if (chosenRace && chosenPronoun && val.length >= 1) {
-            usernameHint.textContent =
-                `Logging in as ${val.toLowerCase()}@${chosenRace}.${chosenPronoun}`;
-        } else {
-            usernameHint.textContent = "Choose race + pronouns, then type the name.";
-        }
-        return;
-    }
-
-    // CREATE: auto format first letter upper, rest lower
-    authUsername.value =
-        val.charAt(0).toUpperCase() +
-        val.slice(1).toLowerCase();
-
-    val = authUsername.value;
-
-    if (val.length === 0) {
-        usernameHint.style.color = "#ccc";
-        usernameHint.textContent = "Name must be at least 4 letters.";
-        return;
-    }
-
-    if (val.length < 4) {
-        const need = 4 - val.length;
-        usernameHint.style.color = "#ffdd88";
-        usernameHint.textContent = `This being is still forming (needs ${need} more letter${need === 1 ? "" : "s"}).`;
-        return;
-    }
-
-    const NAME_RE = /^[A-Za-z']+$/;
-    if (!NAME_RE.test(val)) {
-        usernameHint.style.color = "#ff9d9d";
-        usernameHint.textContent = "Letters and ' only. No spaces or numbers.";
-        return;
-    }
-
-    usernameHint.style.color = "#a0ffa0";
-    usernameHint.textContent = "This name feels stable.";
-});
-
-authPassword.addEventListener("input", () => {
-    const val = authPassword.value;
-
-    if (val.length === 0) {
-        passwordHint.style.color = "#ccc";
-        passwordHint.textContent = "Choose a key phrase.";
-        return;
-    }
-
-    if (val.length < 6) {
-        const need = 6 - val.length;
-        passwordHint.style.color = "#ffdd88";
-        passwordHint.textContent = `That key is fragile (needs ${need} more character${need === 1 ? "" : "s"}).`;
-        return;
-    }
-
-    passwordHint.style.color = "#a0ffa0";
-    passwordHint.textContent = "That key feels strong enough for now.";
-});
-
-/* ============================================================
-   CONFIRM BUTTON
-   ============================================================ */
+// -------------------------------------------------
+// CONFIRM
+// -------------------------------------------------
 btnAuthConfirm.onclick = () => {
+    console.log("✅ auth confirm");
+
     authError.textContent = "";
 
     const name = authUsername.value.trim();
     const pass = authPassword.value.trim();
 
-    // CREATE
-    if (authMode === "create") {
-        if (!chosenRace || !chosenPronoun) {
-            authError.textContent = "Pick race and pronouns first.";
-            return;
-        }
-        if (!name || !pass) {
-            authError.textContent = "Missing name or key phrase.";
-            return;
-        }
-
-        beginCreateAccount(name, pass, chosenRace, chosenPronoun);
-        return;
-    }
-
-    // LOGIN
     if (!chosenRace || !chosenPronoun) {
         authError.textContent = "Select race and pronouns.";
         return;
     }
+
     if (!name || !pass) {
-        authError.textContent = "Enter name and key phrase.";
+        authError.textContent = "Missing name or key phrase.";
         return;
     }
 
-    const loginId =
-        name.toLowerCase() +
-        "@" +
-        chosenRace +
-        "." +
-        chosenPronoun;
+    if (authMode === "create") {
+        console.log("📤 create account");
+        if (onCreate) onCreate(name, pass, chosenRace, chosenPronoun);
+        return;
+    }
 
-    attemptLogin(loginId, pass);
+    const loginId = `${name.toLowerCase()}@${chosenRace}.${chosenPronoun}`;
+    console.log("📤 login:", loginId);
+    if (onLogin) onLogin(loginId, pass);
 };
 
-/* ============================================================
-   CANCEL BUTTON
-   ============================================================ */
+// -------------------------------------------------
+// CANCEL
+// -------------------------------------------------
 btnAuthCancel.onclick = () => {
+    console.log("↩ auth cancel");
     modalOverlay.classList.add("hidden");
     welcomeScreen.classList.remove("hidden");
 };
