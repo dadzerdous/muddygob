@@ -2,17 +2,48 @@
 // ui.js – Character Sheet Authentication UI
 // ===============================================
 // ui.js
-export function showAuthModal(mode) { ... }
-export function hideAuthUI() { ... }
-export function applyThemeForRace(race) { ... }
+
 
 // These are CALLBACKS (set later)
 let onCreate = null;
 let onLogin = null;
 
-export function bindAuthActions(createFn, loginFn) {
-    onCreate = createFn;
-    onLogin = loginFn;
+// CREATE
+if (authMode === "create") {
+    if (!chosenRace || !chosenPronoun) {
+        authError.textContent = "Pick race and pronouns first.";
+        return;
+    }
+    if (!name || !pass) {
+        authError.textContent = "Missing name or key phrase.";
+        return;
+    }
+
+    if (onCreate) {
+        onCreate(name, pass, chosenRace, chosenPronoun);
+    }
+    return;
+}
+
+// LOGIN
+if (!chosenRace || !chosenPronoun) {
+    authError.textContent = "Select race and pronouns.";
+    return;
+}
+if (!name || !pass) {
+    authError.textContent = "Enter name and key phrase.";
+    return;
+}
+
+const loginId =
+    name.toLowerCase() +
+    "@" +
+    chosenRace +
+    "." +
+    chosenPronoun;
+
+if (onLogin) {
+    onLogin(loginId, pass);
 }
 
 
