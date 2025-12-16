@@ -1,8 +1,21 @@
  // ===============================================
 // ui.js – Character Sheet Authentication UI
 // ===============================================
+// ui.js
+export function showAuthModal(mode) { ... }
+export function hideAuthUI() { ... }
+export function applyThemeForRace(race) { ... }
 
-import { beginCreateAccount, attemptLogin } from "./client.js";
+// These are CALLBACKS (set later)
+let onCreate = null;
+let onLogin = null;
+
+export function bindAuthActions(createFn, loginFn) {
+    onCreate = createFn;
+    onLogin = loginFn;
+}
+
+
 
 /* DOM ELEMENTS */
 const welcomeScreen  = document.getElementById("welcome-screen");
