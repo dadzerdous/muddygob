@@ -51,6 +51,8 @@ function applyThemeForRace(race) {
             break;
         default:
             themeLink.href = "themes/default.css";
+      export function applyThemeForRace(race) {
+
     }
 }
 
