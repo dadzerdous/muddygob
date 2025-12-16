@@ -73,6 +73,7 @@ if (passwordHint) passwordHint.textContent = "";
     chosenRace    = null;
     chosenPronoun = null;
     createStep    = null;
+    applyThemeForRace(playerData.race);
 
     welcomeScreen.classList.add("hidden");
     modalOverlay.classList.remove("hidden");
