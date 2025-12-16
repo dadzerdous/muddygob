@@ -5,7 +5,14 @@
 
 import { renderRoom, renderSystem } from "./render.js";
 import { updatePlayerHUD } from "./hudUI.js";
-import { hideAuthUI, applyThemeForRace } from "./ui.js";
+import {
+  hideAuthUI,
+  applyThemeForRace,
+  bindAuthActions
+} from "./ui.js";
+
+bindAuthActions(beginCreateAccount, attemptLogin);
+
 
 
 
@@ -179,6 +186,7 @@ document.addEventListener("keydown", e => {
         case "ArrowRight": sendText("move east"); break;
     }
 });
+
 
 
 
