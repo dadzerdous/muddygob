@@ -190,7 +190,7 @@ button:hover,
     position: relative;
     z-index: 5; /* ensure text is crisp */
     padding: 16px;
-    padding-bottom: 40px;
+    padding-bottom: 100px;
 }
 
 /* ============================================================
@@ -335,15 +335,24 @@ button:hover,
    ACTION BAR
 ================================ */
 #action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 100px; /* same height as input-bar */
+    height: 48px;
+
     display: flex;
-    gap: 8px;
-    padding: 8px;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.1);
-   bottom: 64px;
-   z-index: 9999; 
+    gap: 8px;
+
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+
+    border-top: 1px solid rgba(255,255,255,0.15);
+    z-index: 9998;
 }
+
 
 /* Hidden state */
 #action-bar.hidden {
@@ -363,6 +372,7 @@ button:hover,
 .action-btn:hover {
     opacity: 1;
 }
+
 
 
 
