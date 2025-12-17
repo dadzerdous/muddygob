@@ -48,6 +48,9 @@ function showActionBar(objectName, actions) {
 // -----------------------------------------------
 // ROOM RENDER
 // -----------------------------------------------
+// -----------------------------------------------
+// ROOM RENDER (FULL, FIXED, EXPLICIT)
+// -----------------------------------------------
 export function renderRoom(data) {
     const out = document.getElementById("output");
     out.innerHTML = "";
@@ -55,12 +58,17 @@ export function renderRoom(data) {
     // Always reset action bar on room change
     hideActionBar();
 
-    // Title
+    // -------------------------------------------
+    // ROOM TITLE
+    // -------------------------------------------
     out.innerHTML += `<h2>${data.title}</h2>`;
 
     const objects = data.objects || [];
     const lines = Array.isArray(data.desc) ? data.desc : [data.desc];
 
+    // -------------------------------------------
+    // ROOM DESCRIPTION (with inline object links)
+    // -------------------------------------------
     lines.forEach(line => {
         let processed = line;
 
@@ -81,14 +89,38 @@ export function renderRoom(data) {
         out.innerHTML += `<p>${processed}</p>`;
     });
 
-    // Exits
+    // -------------------------------------------
+    // OBJECT LIST (always visible fallback)
+    // -------------------------------------------
+    if (objects.length) {
+        out.innerHTML += `<div class="room-objects"><strong>You see:</strong><br>`;
+
+        objects.forEach(obj => {
+            out.innerHTML += `
+                ${obj.emoji || ""}
+                <span class="obj"
+                      data-name="${obj.name}"
+                      data-actions='${JSON.stringify(obj.actions || ["look"])}'>
+                    ${obj.name}
+                </span><br>
+            `;
+        });
+
+        out.innerHTML += `</div>`;
+    }
+
+    // -------------------------------------------
+    // EXITS
+    // -------------------------------------------
     out.innerHTML += `
         <div class="exits-block">
             <strong>Exits:</strong> ${data.exits.join(", ")}
         </div>
     `;
 
-    // Players
+    // -------------------------------------------
+    // PLAYERS IN ROOM
+    // -------------------------------------------
     if (data.players?.length) {
         out.innerHTML += `
             <div class="room-players">
@@ -98,7 +130,12 @@ export function renderRoom(data) {
         `;
     }
 
+    // -------------------------------------------
+    // MOVEMENT BUTTON STATE
+    // -------------------------------------------
     updateMovementButtons(data);
+
+    // Scroll to bottom
     out.scrollTop = out.scrollHeight;
 }
 
