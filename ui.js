@@ -113,6 +113,48 @@ export function hideAuthUI() {
 }
 
 // -------------------------------------------------
+// LIVE INPUT HINTS — NAME
+// -------------------------------------------------
+authUsername.addEventListener("input", () => {
+    const val = authUsername.value.trim();
+    const len = val.length;
+
+    if (len === 0) {
+        usernameHint.textContent = "";
+        return;
+    }
+
+    if (len < 4) {
+        usernameHint.textContent = `Name too short (${len}/4)`;
+    }
+    else if (len > 16) {
+        usernameHint.textContent = `Name too long (${len}/16)`;
+    }
+    else {
+        usernameHint.textContent = `Name length OK (${len}/16)`;
+    }
+});
+// -------------------------------------------------
+// LIVE INPUT HINTS — PASSWORD
+// -------------------------------------------------
+authPassword.addEventListener("input", () => {
+    const len = authPassword.value.length;
+
+    if (len === 0) {
+        passwordHint.textContent = "";
+        return;
+    }
+
+    if (len < 4) {
+        passwordHint.textContent = `Password too short (${len}/4)`;
+    }
+    else {
+        passwordHint.textContent = `Password length OK`;
+    }
+});
+
+
+// -------------------------------------------------
 // RACE / PRONOUN SELECTION
 // -------------------------------------------------
 function filterPronouns(race) {
