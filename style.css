@@ -191,6 +191,7 @@ button:hover,
     z-index: 5; /* ensure text is crisp */
     padding: 16px;
     padding-bottom: 100px;
+   pointer-events: auto;
 }
 
 /* ============================================================
@@ -390,14 +391,20 @@ button:hover,
     cursor: pointer;
     user-select: none;
     transition: transform 0.15s ease;
-   pointer-events: auto;
+    pointer-events: auto;
 }
+
 
 .hand-slot:active {
     transform: scale(0.88);
 }
 
 
+
+.cmd-help {
+  cursor: pointer;
+  color: #ffd27d;
+}
 
 
 
