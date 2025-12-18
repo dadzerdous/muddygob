@@ -16,6 +16,10 @@ export function updatePlayerHUD(player) {
 
     if (hudCol) hudCol.classList.remove("hidden");
     if (topBar) topBar.classList.remove("hidden");
+    // Reveal hands bar
+const hands = document.getElementById("hands-bar");
+if (hands) hands.classList.remove("hidden");
+
 }
 export function updateHUD({ level, energy, stamina, interactions }) {
     if (level !== undefined)
