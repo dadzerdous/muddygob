@@ -2,103 +2,65 @@
 // main.js – glue file
 // ===============================================
 
-import { initWebSocket, sendText } from "./client.js";
+// Added sendJSON to the imports to prevent ReferenceErrors
+import { initWebSocket, sendText, sendJSON } from "./client.js";
 import { showAuthModal, hideAuthUI } from "./ui.js";
 import { setClientHeldItem, updateHandsDisplay } from "./hudUI.js";
 
-
-// -----------------------------------------
-// SEND BUTTON + INPUT BOX
-// -----------------------------------------
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
 if (sendBtn && input) {
-sendBtn.onclick = () => {
-    const text = input.value.trim();
-    if (!text) return;
+    sendBtn.onclick = () => {
+        const text = input.value.trim();
+        if (!text) return;
 
-    // naive temporary simulation
-    if (text.startsWith("take ")) {
-        const item = text.split(" ")[1].toLowerCase();
-        setClientHeldItem(item);
-    }
-    if (text.startsWith("drop")) {
-        setClientHeldItem(null);
-    }
-    if (text.startsWith("store")) {
-        setClientHeldItem(null);
-    }
-    if (text.startsWith("retrieve ")) {
-        const item = text.split(" ")[1].toLowerCase();
-        setClientHeldItem(item);
-    }
+        // Naive temporary simulation for held items
+        if (text.startsWith("take ")) {
+            const item = text.split(" ")[1].toLowerCase();
+            setClientHeldItem(item);
+        }
+        if (text.startsWith("drop") || text.startsWith("store")) {
+            setClientHeldItem(null);
+        }
+        if (text.startsWith("retrieve ")) {
+            const item = text.split(" ")[1].toLowerCase();
+            setClientHeldItem(item);
+        }
 
-    sendText(text);
-    input.value = "";
-};
-
+        sendText(text);
+        input.value = "";
+    };
 
     input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendBtn.click();
     });
 }
 
-// -----------------------------------------
-// THEME LOADER (optional external call)
-// -----------------------------------------
 export function setTheme(name) {
     const theme = document.getElementById("theme-css");
-    theme.href = `themes/${name}.css`;
+    if (theme) theme.href = `themes/${name}.css`;
 }
 
-// -----------------------------------------
-// WELCOME BUTTONS
-// -----------------------------------------
 document.getElementById("btn-new").onclick = () => showAuthModal("create");
 document.getElementById("btn-login").onclick = () => showAuthModal("login");
-// -----------------------------
-// HAND UI BUTTON EVENTS
-// -----------------------------
-document.getElementById("inv-btn").onclick = () => {
-    // for now, just perform the text command
-    sendText("inv");
-};
 
-document.getElementById("hand-left").onclick = () => {
-    sendText("hands");
-};
+document.getElementById("inv-btn").onclick = () => sendText("inv");
+document.getElementById("hand-left").onclick = () => sendText("hands");
+document.getElementById("hand-right").onclick = () => sendText("hands");
 
-
-
-document.getElementById("hand-right").onclick = () => {
-    sendText("hands"); // temporary behavior
-};
-
-
-// -----------------------------------------
-// ARROW NAVIGATION BUTTONS
-// -----------------------------------------
 document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     btn.onclick = () => {
         const dir = btn.dataset.dir;
-        sendText(dir);  // ← FIXED
+        sendText(dir);
     };
 });
-// HELP button
-document.getElementById("help-btn").onclick = () => {
-    sendText("help");
-};
 
-// EXIT button
+document.getElementById("help-btn").onclick = () => sendText("help");
+
+// Fixed: sendJSON is now properly imported
 document.getElementById("exit-btn").onclick = () => {
     sendJSON({ type: "exit" });
 };
 
-
-// -----------------------------------------
-// CONNECT TO SERVER
-// -----------------------------------------
 initWebSocket("wss://muddygob-server-1.onrender.com");
-
-
