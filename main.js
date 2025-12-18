@@ -56,11 +56,13 @@ document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     };
 });
 
-document.getElementById("help-btn").onclick = () => sendText("help");
-
-// Fixed: sendJSON is now properly imported
-document.getElementById("exit-btn").onclick = () => {
-    sendJSON({ type: "exit" });
+document.getElementById("btn-help").onclick = () => {
+    sendText("help");
 };
+
+document.getElementById("btn-exit").onclick = () => {
+    sendText("quit");
+};
+
 
 initWebSocket("wss://muddygob-server-1.onrender.com");
