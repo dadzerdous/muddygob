@@ -4,6 +4,7 @@
 
 import { initWebSocket, sendText } from "./client.js";
 import { showAuthModal, hideAuthUI } from "./ui.js";
+import { setClientHeldItem } from "./hudUI.js";
 
 // -----------------------------------------
 // SEND BUTTON + INPUT BOX
@@ -46,8 +47,13 @@ document.getElementById("inv-btn").onclick = () => {
 };
 
 document.getElementById("hand-left").onclick = () => {
-    sendText("hands"); // temporary behavior
+    if (!clientHeldItem) {
+        sendText("hands");
+    } else {
+        // clicking the item itself shows actions via .obj click handler
+    }
 };
+
 
 document.getElementById("hand-right").onclick = () => {
     sendText("hands"); // temporary behavior
