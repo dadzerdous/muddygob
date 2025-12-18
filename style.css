@@ -373,6 +373,28 @@ button:hover,
     opacity: 1;
 }
 
+#hands-bar {
+    position: fixed;
+    bottom: 150px; /* sits between action bar + input bar */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 2.2rem;
+    z-index: 9998;
+    opacity: 0.92;
+}
+
+.hand-slot {
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease;
+}
+
+.hand-slot:active {
+    transform: scale(0.88);
+}
+
 
 
 
