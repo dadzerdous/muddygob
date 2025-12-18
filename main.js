@@ -13,12 +13,30 @@ const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
 if (sendBtn && input) {
-    sendBtn.onclick = () => {
-        const text = input.value.trim();
-        if (!text) return;
-        sendText(text);
-        input.value = "";
-    };
+sendBtn.onclick = () => {
+    const text = input.value.trim();
+    if (!text) return;
+
+    // naive temporary simulation
+    if (text.startsWith("take ")) {
+        const item = text.split(" ")[1].toLowerCase();
+        setClientHeldItem(item);
+    }
+    if (text.startsWith("drop")) {
+        setClientHeldItem(null);
+    }
+    if (text.startsWith("store")) {
+        setClientHeldItem(null);
+    }
+    if (text.startsWith("retrieve ")) {
+        const item = text.split(" ")[1].toLowerCase();
+        setClientHeldItem(item);
+    }
+
+    sendText(text);
+    input.value = "";
+};
+
 
     input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendBtn.click();
@@ -47,12 +65,9 @@ document.getElementById("inv-btn").onclick = () => {
 };
 
 document.getElementById("hand-left").onclick = () => {
-    if (!clientHeldItem) {
-        sendText("hands");
-    } else {
-        // clicking the item itself shows actions via .obj click handler
-    }
+    sendText("hands");
 };
+
 
 
 document.getElementById("hand-right").onclick = () => {
