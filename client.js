@@ -1,5 +1,5 @@
 // ===============================================
-// client.js – Networking + Message Routing (CLEAN)
+// client.js – Networking + Message Routing (FIXED)
 // ===============================================
 
 console.log("🌐 client.js loaded");
@@ -24,6 +24,7 @@ import {
 let ws = null;
 let reconnectDelay = 2000;
 let manualExit = false;
+
 document.addEventListener("click", e => {
     const el = e.target;
     if (el.classList.contains("cmd-help")) {
@@ -48,14 +49,13 @@ export function initWebSocket(url) {
         const token = localStorage.getItem("mg_token");
         if (token) {
             console.log("🔁 resume with token");
+            // If resuming, we tell the server we are back
             ws.send(JSON.stringify({ type: "resume", token }));
         }
     };
 
     ws.onclose = () => {
         console.warn("❌ WS disconnected");
-
-        // if this was NOT manual exit, try reconnect later
         if (!manualExit) {
             if (statusEl) statusEl.textContent = "✖ Disconnected";
             setTimeout(() => initWebSocket(url), reconnectDelay);
@@ -69,11 +69,7 @@ export function initWebSocket(url) {
     ws.onmessage = e => {
         const raw = e.data;
 
-        // -------------------------------
-        // handle exit command
-        // -------------------------------
         if (raw === "manual_exit") {
-            console.log("👋 manual exit received");
             manualExit = true;
             localStorage.removeItem("mg_token");
             setTimeout(() => location.reload(), 500);
@@ -86,7 +82,6 @@ export function initWebSocket(url) {
         try {
             data = JSON.parse(raw);
         } catch {
-            // Not JSON — treat as plain system text
             renderSystem(raw);
             return;
         }
@@ -124,25 +119,26 @@ function routeMessage(data) {
             break;
 
         case "session_token":
-            console.log("💾 token stored");
             localStorage.setItem("mg_token", data.token);
             break;
 
-case "player_state":
-    hideAuthUI();
-    applyThemeForRace(data.player.race);
-    updatePlayerHUD(data.player);
-    updateHandsDisplay(); // <<< REQUIRED
-    break;
+        case "player_state":
+            // Critical: Ensure UI elements are revealed
+            hideAuthUI();
+            if (data.player?.race) applyThemeForRace(data.player.race);
+            updatePlayerHUD(data.player);
+            updateHandsDisplay(); 
+            break;
 
-case "held":
-    setClientHeldItem(data.item);
-    break;
+        case "held":
+            setClientHeldItem(data.item);
+            // Safety: Ensure hands are visible if an item is received
+            document.getElementById("hands-bar")?.classList.remove("hidden");
+            break;
 
-            case "stats":
-    updateHUD(data);
-    break;
-
+        case "stats":
+            updateHUD(data);
+            break;
 
         case "players_online": {
             const el = document.getElementById("players-online");
@@ -151,6 +147,10 @@ case "held":
         }
 
         case "room":
+            // If we receive a room, the user is definitely "in game" 
+            // We force the Auth UI away and ensure the hands container is shown
+            hideAuthUI(); 
+            document.getElementById("hands-bar")?.classList.remove("hidden");
             renderRoom(data);
             break;
 
@@ -160,7 +160,7 @@ case "held":
 }
 
 // -------------------------------------------------
-// AUTH API (called by ui.js)
+// AUTH API
 // -------------------------------------------------
 export function beginCreateAccount(name, pass, race, pronoun) {
     sendJSON({
@@ -180,21 +180,17 @@ export function attemptLogin(loginId, password) {
     });
 }
 
-// -------------------------------------------------
-// BIND UI CALLBACKS
-// -------------------------------------------------
 bindAuthActions(beginCreateAccount, attemptLogin);
 
 // -------------------------------------------------
 // MOVEMENT KEYS
 // -------------------------------------------------
 document.addEventListener("keydown", e => {
+    // Prevent movement if user is typing in the input box
+    if (document.activeElement.tagName === "INPUT") return;
+
     if (e.key === "ArrowUp") sendText("move north");
     if (e.key === "ArrowDown") sendText("move south");
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
-
-
-
-
