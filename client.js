@@ -122,12 +122,16 @@ function routeMessage(data) {
             localStorage.setItem("mg_token", data.token);
             break;
 
-        case "player_state":
-            console.log("🎭 player_state received");
-            hideAuthUI();
-            applyThemeForRace(data.player.race);
-            updatePlayerHUD(data.player);
-            break;
+case "player_state":
+    hideAuthUI();
+    applyThemeForRace(data.player.race);
+    updatePlayerHUD(data.player);
+    updateHandsDisplay(); // <<< REQUIRED
+    break;
+
+case "held":
+    setClientHeldItem(data.item);
+    break;
 
             case "stats":
     updateHUD(data);
@@ -184,5 +188,6 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
