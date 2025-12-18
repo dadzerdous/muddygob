@@ -37,6 +37,22 @@ export function setTheme(name) {
 // -----------------------------------------
 document.getElementById("btn-new").onclick = () => showAuthModal("create");
 document.getElementById("btn-login").onclick = () => showAuthModal("login");
+// -----------------------------
+// HAND UI BUTTON EVENTS
+// -----------------------------
+document.getElementById("inv-btn").onclick = () => {
+    // for now, just perform the text command
+    sendText("inv");
+};
+
+document.getElementById("hand-left").onclick = () => {
+    sendText("hands"); // temporary behavior
+};
+
+document.getElementById("hand-right").onclick = () => {
+    sendText("hands"); // temporary behavior
+};
+
 
 // -----------------------------------------
 // ARROW NAVIGATION BUTTONS
