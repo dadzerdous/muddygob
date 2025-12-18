@@ -18,6 +18,13 @@ import {
 let ws = null;
 let reconnectDelay = 2000;
 let manualExit = false;
+document.addEventListener("click", e => {
+    const el = e.target;
+    if (el.classList.contains("cmd-help")) {
+        const cmd = el.dataset.cmd;
+        sendText(`help ${cmd}`);
+    }
+});
 
 // -------------------------------------------------
 // INIT
@@ -172,3 +179,4 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
