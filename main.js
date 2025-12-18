@@ -56,13 +56,15 @@ document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     };
 });
 
-document.getElementById("btn-help").onclick = () => {
-    sendText("help");
-};
+const helpBtn = document.getElementById("btn-help");
+if (helpBtn) {
+    helpBtn.onclick = () => sendText("help");
+}
 
-document.getElementById("btn-exit").onclick = () => {
-    sendText("quit");
-};
+const exitBtn = document.getElementById("btn-exit");
+if (exitBtn) {
+    exitBtn.onclick = () => sendText("quit");
+}
 
 
 initWebSocket("wss://muddygob-server-1.onrender.com");
