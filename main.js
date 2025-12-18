@@ -4,7 +4,8 @@
 
 import { initWebSocket, sendText } from "./client.js";
 import { showAuthModal, hideAuthUI } from "./ui.js";
-import { setClientHeldItem } from "./hudUI.js";
+import { setClientHeldItem, updateHandsDisplay } from "./hudUI.js";
+
 
 // -----------------------------------------
 // SEND BUTTON + INPUT BOX
