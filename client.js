@@ -129,6 +129,11 @@ function routeMessage(data) {
             updatePlayerHUD(data.player);
             break;
 
+            case "stats":
+    updateHUD(data);
+    break;
+
+
         case "players_online": {
             const el = document.getElementById("players-online");
             if (el) el.textContent = data.count;
@@ -179,4 +184,5 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
