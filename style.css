@@ -375,7 +375,7 @@ button:hover,
 
 #hands-bar {
     position: fixed;
-    bottom: 95px; /* sits between action bar + input bar */
+    bottom: 15px; /* sits between action bar + input bar */
     width: 100%;
     display: flex;
     justify-content: center;
@@ -396,6 +396,7 @@ button:hover,
 .hand-slot:active {
     transform: scale(0.88);
 }
+
 
 
 
