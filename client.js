@@ -5,7 +5,13 @@
 console.log("🌐 client.js loaded");
 
 import { renderRoom, renderSystem } from "./render.js";
-import { updatePlayerHUD } from "./hudUI.js";
+import {
+    updatePlayerHUD,
+    updateHUD,
+    setClientHeldItem,
+    updateHandsDisplay
+} from "./hudUI.js";
+
 import {
     hideAuthUI,
     applyThemeForRace,
@@ -188,6 +194,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
