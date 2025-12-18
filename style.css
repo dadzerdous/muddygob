@@ -390,12 +390,13 @@ button:hover,
     cursor: pointer;
     user-select: none;
     transition: transform 0.15s ease;
-
+   pointer-events: auto;
 }
 
 .hand-slot:active {
     transform: scale(0.88);
 }
+
 
 
 
