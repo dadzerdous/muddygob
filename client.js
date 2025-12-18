@@ -17,6 +17,7 @@ import {
 // -------------------------------------------------
 let ws = null;
 let reconnectDelay = 2000;
+let manualExit = false;
 
 // -------------------------------------------------
 // INIT
@@ -25,7 +26,6 @@ export function initWebSocket(url) {
     console.log("🔌 initWebSocket:", url);
 
     ws = new WebSocket(url);
-
     const statusEl = document.getElementById("connection-status");
 
     ws.onopen = () => {
@@ -41,22 +41,39 @@ export function initWebSocket(url) {
 
     ws.onclose = () => {
         console.warn("❌ WS disconnected");
-        if (statusEl) statusEl.textContent = "✖ Disconnected";
-        setTimeout(() => initWebSocket(url), reconnectDelay);
+
+        // if this was NOT manual exit, try reconnect later
+        if (!manualExit) {
+            if (statusEl) statusEl.textContent = "✖ Disconnected";
+            setTimeout(() => initWebSocket(url), reconnectDelay);
+        }
     };
 
     ws.onerror = err => {
-        console.error("⚠ WS error", err);
+        console.error("⚠ WS error:", err);
     };
 
     ws.onmessage = e => {
         const raw = e.data;
+
+        // -------------------------------
+        // handle exit command
+        // -------------------------------
+        if (raw === "manual_exit") {
+            console.log("👋 manual exit received");
+            manualExit = true;
+            localStorage.removeItem("mg_token");
+            setTimeout(() => location.reload(), 500);
+            return;
+        }
+
         if (raw === "pong") return;
 
         let data;
         try {
             data = JSON.parse(raw);
         } catch {
+            // Not JSON — treat as plain system text
             renderSystem(raw);
             return;
         }
@@ -105,11 +122,11 @@ function routeMessage(data) {
             updatePlayerHUD(data.player);
             break;
 
-            case "players_online":
-    const el = document.getElementById("players-online");
-    if (el) el.textContent = data.count;
-    break;
-
+        case "players_online": {
+            const el = document.getElementById("players-online");
+            if (el) el.textContent = data.count;
+            break;
+        }
 
         case "room":
             renderRoom(data);
@@ -155,4 +172,3 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
-
