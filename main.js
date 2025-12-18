@@ -85,6 +85,15 @@ document.querySelectorAll(".arrow-btn")?.forEach(btn => {
         sendText(dir);  // ← FIXED
     };
 });
+// HELP button
+document.getElementById("help-btn").onclick = () => {
+    sendText("help");
+};
+
+// EXIT button
+document.getElementById("exit-btn").onclick = () => {
+    sendJSON({ type: "exit" });
+};
 
 
 // -----------------------------------------
