@@ -1,11 +1,11 @@
 // ===============================================
-// main.js – glue file
+// main.js – glue file (clean version)
 // ===============================================
 
 // Added sendJSON to the imports to prevent ReferenceErrors
 import { initWebSocket, sendText, sendJSON } from "./client.js";
 import { showAuthModal, hideAuthUI } from "./ui.js";
-import { setClientHeldItem, updateHandsDisplay } from "./hudUI.js";
+import { setClientHeldItem } from "./hudUI.js";
 
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
@@ -19,9 +19,7 @@ if (sendBtn && input) {
         const modeSel = document.getElementById("chat-mode");
         const mode = modeSel ? modeSel.value : "say";
 
-        // -------------------------------------------------
-        // HELD ITEM TEMP SIM
-        // -------------------------------------------------
+        // --- held item sim ---
         if (raw.startsWith("take ")) {
             const item = raw.split(" ")[1].toLowerCase();
             setClientHeldItem(item);
@@ -34,38 +32,24 @@ if (sendBtn && input) {
             setClientHeldItem(item);
         }
 
-        // -------------------------------------------------
-        // SMART MODE LOGIC
-        // -------------------------------------------------
-        let final;
-        if (mode === "command") {
-            // Raw commands like look, quit, help, etc.
-            final = raw;
-        } else {
-            // Prefix chat types
-            final = `${mode} ${raw}`;
-        }
+        // --- smart mode logic ---
+        const final = (mode === "command")
+            ? raw                        // send raw
+            : `${mode} ${raw}`;          // send say/whisper/etc
 
         sendText(final);
         input.value = "";
     };
 
+    // Only ONE keypress listener
     input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendBtn.click();
     });
 }
 
-    input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendBtn.click();
-    });
-}
-
-
-export function setTheme(name) {
-    const theme = document.getElementById("theme-css");
-    if (theme) theme.href = `themes/${name}.css`;
-}
-
+// -----------------------------------------------
+// BUTTON LOGIC
+// -----------------------------------------------
 document.getElementById("btn-new").onclick = () => showAuthModal("create");
 document.getElementById("btn-login").onclick = () => showAuthModal("login");
 
@@ -73,30 +57,16 @@ document.getElementById("inv-btn").onclick = () => sendText("inv");
 document.getElementById("hand-left").onclick = () => sendText("hands");
 document.getElementById("hand-right").onclick = () => sendText("hands");
 
-// Use querySelectorAll to catch the specific buttons by class
-document.querySelectorAll(".btn-help, .btn-exit, .arrow-btn").forEach(btn => {
+// Arrow keys, help, exit
+document.querySelectorAll(".arrow-btn").forEach(btn => {
     btn.onclick = () => {
-        if (btn.dataset.dir) {
-            sendText(btn.dataset.dir);
-        } else if (btn.dataset.cmd === "help") {
-            sendText("help");
-        } else if (btn.dataset.cmd === "exit") {
-            localStorage.removeItem("mg_token"); // Clear auth
-            sendText("exit"); // This triggers your server command
+        if (btn.dataset.dir) return sendText(btn.dataset.dir);
+        if (btn.dataset.cmd === "help") return sendText("help");
+        if (btn.dataset.cmd === "exit") {
+            localStorage.removeItem("mg_token");
+            return sendText("quit");
         }
     };
 });
-
-
-const helpBtn = document.getElementById("btn-help");
-if (helpBtn) {
-    helpBtn.onclick = () => sendText("help");
-}
-
-const exitBtn = document.getElementById("btn-exit");
-if (exitBtn) {
-    exitBtn.onclick = () => sendText("quit");
-}
-
 
 initWebSocket("wss://muddygob-server-1.onrender.com");
