@@ -398,6 +398,14 @@ button:hover,
 .hand-slot:active {
     transform: scale(0.88);
 }
+.chat-select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 15px;
+}
 
 
 
@@ -405,6 +413,7 @@ button:hover,
   cursor: pointer;
   color: #ffd27d;
 }
+
 
 
 
