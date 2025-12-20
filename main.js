@@ -12,23 +12,34 @@ const sendBtn = document.getElementById("send");
 
 if (sendBtn && input) {
     sendBtn.onclick = () => {
-        const text = input.value.trim();
-        if (!text) return;
+        const raw = input.value.trim();
+        if (!raw) return;
 
-        // Naive temporary simulation for held items
-        if (text.startsWith("take ")) {
-            const item = text.split(" ")[1].toLowerCase();
+        // Pull current chat mode (default say)
+        const modeSel = document.getElementById("chat-mode");
+        const mode = modeSel ? modeSel.value : "say";
+
+        // -------------------------------------------------
+        // HELD ITEM TEMP SIM
+        // -------------------------------------------------
+        if (raw.startsWith("take ")) {
+            const item = raw.split(" ")[1].toLowerCase();
             setClientHeldItem(item);
         }
-        if (text.startsWith("drop") || text.startsWith("store")) {
+        if (raw.startsWith("drop") || raw.startsWith("store")) {
             setClientHeldItem(null);
         }
-        if (text.startsWith("retrieve ")) {
-            const item = text.split(" ")[1].toLowerCase();
+        if (raw.startsWith("retrieve ")) {
+            const item = raw.split(" ")[1].toLowerCase();
             setClientHeldItem(item);
         }
 
-        sendText(text);
+        // -------------------------------------------------
+        // SEND CHAT WITH MODE PREFIX
+        // -------------------------------------------------
+        const final = `${mode} ${raw}`;
+        sendText(final);
+
         input.value = "";
     };
 
@@ -36,6 +47,7 @@ if (sendBtn && input) {
         if (e.key === "Enter") sendBtn.click();
     });
 }
+
 
 export function setTheme(name) {
     const theme = document.getElementById("theme-css");
