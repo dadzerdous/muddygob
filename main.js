@@ -61,24 +61,16 @@ document.getElementById("inv-btn").onclick = () => sendText("inv");
 document.getElementById("hand-left").onclick = () => sendText("hands");
 document.getElementById("hand-right").onclick = () => sendText("hands");
 
-document.querySelectorAll(".arrow-btn")?.forEach(btn => {
+// Use querySelectorAll to catch the specific buttons by class
+document.querySelectorAll(".btn-help, .btn-exit, .arrow-btn").forEach(btn => {
     btn.onclick = () => {
         if (btn.dataset.dir) {
-            // movement
             sendText(btn.dataset.dir);
-            return;
-        }
-
-        if (btn.dataset.cmd === "help") {
+        } else if (btn.dataset.cmd === "help") {
             sendText("help");
-            return;
-        }
-
-        if (btn.dataset.cmd === "exit") {
-            // mark a manual exit so reconnect doesn’t fire
-            localStorage.removeItem("mg_token");
-            sendText("quit");
-            return;
+        } else if (btn.dataset.cmd === "exit") {
+            localStorage.removeItem("mg_token"); // Clear auth
+            sendText("exit"); // This triggers your server command
         }
     };
 });
