@@ -35,13 +35,25 @@ if (sendBtn && input) {
         }
 
         // -------------------------------------------------
-        // SEND CHAT WITH MODE PREFIX
+        // SMART MODE LOGIC
         // -------------------------------------------------
-        const final = `${mode} ${raw}`;
-        sendText(final);
+        let final;
+        if (mode === "command") {
+            // Raw commands like look, quit, help, etc.
+            final = raw;
+        } else {
+            // Prefix chat types
+            final = `${mode} ${raw}`;
+        }
 
+        sendText(final);
         input.value = "";
     };
+
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+    });
+}
 
     input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendBtn.click();
