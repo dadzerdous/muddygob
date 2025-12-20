@@ -212,7 +212,7 @@ button:hover,
 
     background: var(--bg-panel-strong);
     border-top: 2px solid var(--border-main);
-    z-index: 9999;
+    z-index: 9998;
 
     padding: 10px;
     flex-direction: row;
@@ -382,7 +382,7 @@ button:hover,
     justify-content: center;
     gap: 24px;
     font-size: 1.8rem;
-    z-index: 9998;
+    z-index: 9999;
     opacity: 0.92;
    pointer-events: auto;
 }
@@ -405,6 +405,7 @@ button:hover,
   cursor: pointer;
   color: #ffd27d;
 }
+
 
 
 
