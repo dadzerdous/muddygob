@@ -157,9 +157,9 @@ button:hover,
 }
 
 .hud-cell {
-    padding: 2px 4px;
-    border-radius: 4px;
-    background: rgba(0,0,0,0.2);
+    padding: 1px 2px;
+    border-radius: 2px;
+    background: rgba(0,0,0,20);
 }
 
 
@@ -413,6 +413,7 @@ button:hover,
   cursor: pointer;
   color: #ffd27d;
 }
+
 
 
 
