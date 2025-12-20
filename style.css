@@ -140,7 +140,7 @@ button:hover,
 }
 
 #hud-col div {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(40, 0, 0, 0.4);
     padding: 4px 8px;
     border-radius: 6px;
 }
@@ -413,6 +413,7 @@ button:hover,
   cursor: pointer;
   color: #ffd27d;
 }
+
 
 
 
