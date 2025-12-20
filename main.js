@@ -51,10 +51,26 @@ document.getElementById("hand-right").onclick = () => sendText("hands");
 
 document.querySelectorAll(".arrow-btn")?.forEach(btn => {
     btn.onclick = () => {
-        const dir = btn.dataset.dir;
-        sendText(dir);
+        if (btn.dataset.dir) {
+            // movement
+            sendText(btn.dataset.dir);
+            return;
+        }
+
+        if (btn.dataset.cmd === "help") {
+            sendText("help");
+            return;
+        }
+
+        if (btn.dataset.cmd === "exit") {
+            // mark a manual exit so reconnect doesn’t fire
+            localStorage.removeItem("mg_token");
+            sendText("quit");
+            return;
+        }
     };
 });
+
 
 const helpBtn = document.getElementById("btn-help");
 if (helpBtn) {
