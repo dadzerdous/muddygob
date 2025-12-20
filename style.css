@@ -270,6 +270,8 @@ button:hover,
 }
 
 .arrow-btn {
+       width: 42px;        /* fixed visual width */
+    height: 42px; 
     padding: 6px 10px;
     font-size: 16px;
     border: 1px solid var(--border-main);
@@ -413,6 +415,7 @@ button:hover,
   cursor: pointer;
   color: #ffd27d;
 }
+
 
 
 
