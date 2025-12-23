@@ -10,6 +10,17 @@ import { setClientHeldItem } from "./hudUI.js";
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
 
+fetch("items.json")
+    .then(r => r.json())
+    .then(items => {
+        window.worldItems = items;
+        console.log("📦 items.json loaded", items);
+    })
+    .catch(err => {
+        console.error("❌ items.json failed to load", err);
+    });
+
+
 if (sendBtn && input) {
     sendBtn.onclick = () => {
         const raw = input.value.trim();
