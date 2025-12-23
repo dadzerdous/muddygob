@@ -51,7 +51,8 @@ function showActionBar(objectName, actions) {
 // -----------------------------------------------
 // ROOM RENDER (FULL, FIXED, EXPLICIT)
 // -----------------------------------------------
-export function renderRoom(data) {
+export function renderRoom(data, selfName) {
+ {
     const out = document.getElementById("output");
     out.innerHTML = "";
 
