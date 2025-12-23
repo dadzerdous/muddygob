@@ -19,18 +19,6 @@ if (sendBtn && input) {
         const modeSel = document.getElementById("chat-mode");
         const mode = modeSel ? modeSel.value : "say";
 
-        // --- held item sim ---
-        if (raw.startsWith("take ")) {
-            const item = raw.split(" ")[1].toLowerCase();
-            setClientHeldItem(item);
-        }
-        if (raw.startsWith("drop") || raw.startsWith("store")) {
-            setClientHeldItem(null);
-        }
-        if (raw.startsWith("retrieve ")) {
-            const item = raw.split(" ")[1].toLowerCase();
-            setClientHeldItem(item);
-        }
 
         // --- smart mode logic ---
         const final = (mode === "command")
