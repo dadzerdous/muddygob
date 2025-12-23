@@ -16,7 +16,7 @@ export function renderSystem(msg) {
 }
 
 // -----------------------------------------------
-// ACTION BAR HELPERS (DEFINE FIRST)
+// ACTION BAR HELPERS
 // -----------------------------------------------
 function hideActionBar() {
     if (!actionBar) return;
@@ -48,59 +48,40 @@ function showActionBar(objectName, actions) {
 // -----------------------------------------------
 // ROOM RENDER
 // -----------------------------------------------
-// -----------------------------------------------
-// ROOM RENDER (FULL, FIXED, EXPLICIT)
-// -----------------------------------------------
 export function renderRoom(data, selfName) {
- {
     const out = document.getElementById("output");
     out.innerHTML = "";
 
-    // Always reset action bar on room change
     hideActionBar();
 
-    // -------------------------------------------
-    // ROOM TITLE
-    // -------------------------------------------
+    // Title
     out.innerHTML += `<h2>${data.title}</h2>`;
 
     const objects = data.objects || [];
     const lines = Array.isArray(data.desc) ? data.desc : [data.desc];
-    players.forEach(name => {
-    const label = (name === selfName) ? "you" : name;
-    list += `• ${label}\n`;
-});
 
-
-    // -------------------------------------------
-    // ROOM DESCRIPTION (with inline object links)
-    // -------------------------------------------
+    // Description
     lines.forEach(line => {
         let processed = line;
 
         objects.forEach(obj => {
             const regex = new RegExp(`\\b${obj.name}\\b`, "gi");
-            processed = processed.replace(regex, () => {
-                return `
-                    ${obj.emoji || ""}
-                    <span class="obj"
-                          data-name="${obj.name}"
-                          data-actions='${JSON.stringify(obj.actions || ["look"])}'>
-                        ${obj.name}
-                    </span>
-                `;
-            });
+            processed = processed.replace(regex, () => `
+                ${obj.emoji || ""}
+                <span class="obj"
+                      data-name="${obj.name}"
+                      data-actions='${JSON.stringify(obj.actions || ["look"])}'>
+                    ${obj.name}
+                </span>
+            `);
         });
 
         out.innerHTML += `<p>${processed}</p>`;
     });
 
-    // -------------------------------------------
-    // OBJECT LIST (always visible fallback)
-    // -------------------------------------------
+    // Objects list
     if (objects.length) {
         out.innerHTML += `<div class="room-objects"><strong>You see:</strong><br>`;
-
         objects.forEach(obj => {
             out.innerHTML += `
                 ${obj.emoji || ""}
@@ -111,40 +92,29 @@ export function renderRoom(data, selfName) {
                 </span><br>
             `;
         });
-
         out.innerHTML += `</div>`;
     }
 
-    // -------------------------------------------
-    // EXITS
-    // -------------------------------------------
+    // Exits
     out.innerHTML += `
         <div class="exits-block">
             <strong>Exits:</strong> ${data.exits.join(", ")}
         </div>
     `;
 
-// -------------------------------------------
-// PLAYERS IN ROOM
-// -------------------------------------------
-if (data.players?.length) {
-    out.innerHTML += `
-        <div class="room-players">
-            <strong>Players here:</strong><br>
-            ${data.players
-                .map(name => `• ${name === selfName ? "you" : name}`)
-                .join("<br>")}
-        </div>
-    `;
-}
+    // Players
+    if (data.players?.length) {
+        out.innerHTML += `
+            <div class="room-players">
+                <strong>Players here:</strong><br>
+                ${data.players
+                    .map(name => `• ${name === selfName ? "you" : name}`)
+                    .join("<br>")}
+            </div>
+        `;
+    }
 
-
-    // -------------------------------------------
-    // MOVEMENT BUTTON STATE
-    // -------------------------------------------
     updateMovementButtons(data);
-
-    // Scroll to bottom
     out.scrollTop = out.scrollHeight;
 }
 
