@@ -124,17 +124,20 @@ export function renderRoom(data, selfName) {
         </div>
     `;
 
-    // -------------------------------------------
-    // PLAYERS IN ROOM
-    // -------------------------------------------
-    if (data.players?.length) {
-        out.innerHTML += `
-            <div class="room-players">
-                <strong>Players here:</strong><br>
-                ${data.players.map(n => `• ${n}`).join("<br>")}
-            </div>
-        `;
-    }
+// -------------------------------------------
+// PLAYERS IN ROOM
+// -------------------------------------------
+if (data.players?.length) {
+    out.innerHTML += `
+        <div class="room-players">
+            <strong>Players here:</strong><br>
+            ${data.players
+                .map(name => `• ${name === selfName ? "you" : name}`)
+                .join("<br>")}
+        </div>
+    `;
+}
+
 
     // -------------------------------------------
     // MOVEMENT BUTTON STATE
