@@ -17,6 +17,10 @@ import {
     applyThemeForRace,
     bindAuthActions
 } from "./ui.js";
+let lastEnergy = null;
+let lastStamina = null;
+let selfName = null;
+
 
 // -------------------------------------------------
 // WEBSOCKET
@@ -126,6 +130,7 @@ function routeMessage(data) {
             // Critical: Ensure UI elements are revealed
             hideAuthUI();
             if (data.player?.race) applyThemeForRace(data.player.race);
+                selfName = data.player.name;
             updatePlayerHUD(data.player);
             updateHandsDisplay(); 
             break;
@@ -136,9 +141,22 @@ case "held":
     break;
 
 
-        case "stats":
-            updateHUD(data);
-            break;
+case "stats": {
+    updateStatsUI(data);
+
+    if (lastEnergy !== null && data.energy > lastEnergy) {
+        flashRegen("energy");
+    }
+
+    if (lastStamina !== null && data.stamina > lastStamina) {
+        flashRegen("stamina");
+    }
+
+    lastEnergy = data.energy;
+    lastStamina = data.stamina;
+    break;
+}
+
 
         case "players_online": {
             const el = document.getElementById("players-online");
@@ -181,6 +199,15 @@ export function attemptLogin(loginId, password) {
 }
 
 bindAuthActions(beginCreateAccount, attemptLogin);
+function flashRegen(type) {
+    const bg = document.getElementById("background");
+    if (!bg) return;
+
+    bg.classList.remove("regen-flash");
+    void bg.offsetWidth; // force reflow
+    bg.classList.add("regen-flash");
+}
+
 
 // -------------------------------------------------
 // MOVEMENT KEYS
@@ -194,5 +221,6 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
