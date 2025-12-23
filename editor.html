@@ -1,1 +1,226 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MuddyGob – Dark Fantasy MUD</title>
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- THEME SWITCHER (this was missing!) -->
+    <link id="theme-css" rel="stylesheet" href="themes/default.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+
+<body class="theme-default">
+
+<!-- =====================================================
+     TOP BAR (ALWAYS VISIBLE AT TOP)
+===================================================== -->
+<div id="top-bar" class="hidden">
+    <div id="connection-col">
+        <span id="connection-status">Connecting...</span>
+        <div id="players-online" style="font-size: 0.9em; opacity: 0.8;">Others: </div>
+    </div>
+
+    <div id="player-name-col">—</div>
+
+<div id="hud-col">
+  <div id="hud-grid">
+    <div class="hud-cell" id="hud-level">🧠 1</div>
+    <div class="hud-cell" id="hud-energy">⚡ 100%</div>
+   
+    <div class="hud-cell" id="hud-interact">❗ 0</div>
+       <div class="hud-cell" id="hud-stamina">💪 100%</div>
+  </div>
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     WELCOME SCREEN
+===================================================== -->
+<div id="welcome-screen" class="screen">
+    <h1>M U D D Y G O B</h1>
+    <p>A dark fantasy multiplayer story v0.0.45</p>
+
+    <div class="welcome-buttons">
+        <button id="btn-new">New</button>
+        <button id="btn-login">Login</button>
+    </div>
+</div>
+
+
+
+<!-- =====================================================
+     GAME UI (Shown after login)
+===================================================== -->
+<div id="game-ui" class="hidden">
+
+    <!-- ⭐ ONLY ONE OUTPUT WRAPPER (scrolls!) ⭐ -->
+    <div id="output-wrapper">
+        <div id="output"></div>
+    </div>
+<!-- ACTION BAR -->
+<div id="action-bar" class="hidden"></div>
+<!-- =================================================
+     HANDS BAR (above input)
+================================================= -->
+<div id="hands-bar">
+    <span id="hand-left" class="hand-slot">✋</span>
+    <span id="hand-right" class="hand-slot">🤚</span>
+    <span id="inv-btn" class="hand-slot">🎒</span>
+</div>
+
+    <!-- =================================================
+         INPUT BAR (fixed to bottom)
+    ================================================== -->
+    <div id="input-bar">
+        <select id="chat-mode" class="chat-select">
+  <option value="say" selected>Say</option>
+  <option value="yell">Yell</option>
+  <option value="whisper">Whisper</option>
+  <option value="party">Party</option>
+            <option value="command">Command</option>
+</select>
+
+
+        <input id="input"
+               type="text"
+               placeholder="Try typing 𝘩𝘦𝘭𝘱"
+               autocomplete="off">
+
+        <div id="input-buttons">
+
+            <button id="send">Send</button>
+
+            <!-- Arrow Keys -->
+<div id="arrow-keys">
+    <div class="arrow-row">
+
+        <!-- HELP BUTTON -->
+        <button class="btn-help" data-cmd="help">?</button>
+
+        <!-- MOVE NORTH -->
+        <button class="arrow-btn" data-dir="north">↑</button>
+
+        <!-- EXIT BUTTON -->
+        <button class="btn-exit" data-cmd="exit">⤫</button>
+    </div>
+
+    <div class="arrow-row">
+        <button class="arrow-btn" data-dir="west">←</button>
+        <button class="arrow-btn" data-dir="south">↓</button>
+        <button class="arrow-btn" data-dir="east">→</button>
+    </div>
+</div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     AUTH MODAL
+===================================================== -->
+<div id="modal-overlay" class="hidden">
+    <div id="auth-modal" class="char-sheet">
+
+        <h2 id="auth-title">Create a Being</h2>
+
+        <div class="char-row">
+            <span>Name:</span>
+            <input id="auth-username" type="text" autocomplete="off">
+        </div>
+
+        <div class="char-row">
+            <span>Race:</span>
+            <div class="char-choice" id="race-select">
+                <button class="race-btn" data-race="goblin">Goblin</button>
+                <button class="race-btn" data-race="human">Human</button>
+                <button class="race-btn" data-race="elf">Elf</button>
+            </div>
+        </div>
+
+        <div class="char-row">
+            <span>Pronouns:</span>
+            <div class="char-choice" id="pronoun-select">
+                <button class="pronoun-btn" data-pronoun="he">He</button>
+                <button class="pronoun-btn" data-pronoun="she">She</button>
+                <button class="pronoun-btn" data-pronoun="they">They</button>
+                <button class="pronoun-btn" data-pronoun="it">It</button>
+            </div>
+        </div>
+
+ <div class="char-row">
+    <span>Password:</span>
+    <input id="auth-password" type="password" autocomplete="off">
+</div>
+
+<p id="username-hint" class="auth-hint"></p>
+<p id="password-hint" class="auth-hint"></p>
+
+<p id="auth-error" class="auth-error"></p>
+
+
+        <div class="auth-buttons">
+            <button id="auth-confirm">Confirm</button>
+            <button id="auth-cancel">Back</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- =====================================================
+     MAIN JS
+===================================================== -->
+<script type="module" src="main.js?v=6"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
