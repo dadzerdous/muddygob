@@ -130,8 +130,11 @@ function routeMessage(data) {
             updateHandsDisplay(); 
             break;
 
-        case "held":
-            setClientHeldItem(data.item);
+   
+case "held":
+    setClientHeldItem(data.item, data.emoji);
+ 
+
             // Safety: Ensure hands are visible if an item is received
             document.getElementById("hands-bar")?.classList.remove("hidden");
             break;
@@ -194,3 +197,4 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
