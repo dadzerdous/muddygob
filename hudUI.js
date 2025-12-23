@@ -3,11 +3,14 @@
 // ===============================================
 
 let clientHeldItem = null;
+let clientHeldEmoji = null;
 
-export function setClientHeldItem(id) {
-    clientHeldItem = id || null;
+export function setClientHeldItem(id, emoji = null) {
+    clientHeldItem = id;
+    clientHeldEmoji = emoji;
     updateHandsDisplay();
 }
+
 
 export function updatePlayerHUD(player) {
     if (!player) return;
@@ -51,11 +54,12 @@ export function updateHandsDisplay() {
         return;
     }
 
+
     // Item state: Lookup emoji or use fallback
     const def = window.worldItems?.[clientHeldItem];
     const emoji = def?.emoji || "❓";
 
-    left.textContent = emoji;
+    left.textContent = clientHeldEmoji || "❓";
     left.classList.add("obj");
     left.dataset.name = clientHeldItem;
     left.dataset.actions = JSON.stringify(["drop", "store", "look"]);
