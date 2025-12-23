@@ -169,7 +169,8 @@ case "stats": {
             // We force the Auth UI away and ensure the hands container is shown
             hideAuthUI(); 
             document.getElementById("hands-bar")?.classList.remove("hidden");
-            renderRoom(data);
+            renderRoom(data, selfName);
+
             break;
 
         default:
@@ -221,6 +222,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
