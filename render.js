@@ -65,6 +65,11 @@ export function renderRoom(data) {
 
     const objects = data.objects || [];
     const lines = Array.isArray(data.desc) ? data.desc : [data.desc];
+    players.forEach(name => {
+    const label = (name === selfName) ? "you" : name;
+    list += `• ${label}\n`;
+});
+
 
     // -------------------------------------------
     // ROOM DESCRIPTION (with inline object links)
