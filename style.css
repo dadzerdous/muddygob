@@ -417,11 +417,15 @@ button:hover,
 }
 
 
+@keyframes regenPulse {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.05); }
+  100% { filter: brightness(1); }
+}
 
-
-
-
-
+.regen-flash {
+  animation: regenPulse 0.6s ease-out;
+}
 
 
 
