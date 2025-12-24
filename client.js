@@ -139,9 +139,8 @@ case "player_state":
     selfName = data.player.name;
     updatePlayerHUD(data.player);
     updateHandsDisplay();
+ws.send("look");
 
-    // 🔑 REQUEST THE CURRENT ROOM AFTER LOGIN
-    sendJSON({ type: "look" });
 
     break;
 
@@ -236,6 +235,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
