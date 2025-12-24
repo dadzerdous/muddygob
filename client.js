@@ -111,6 +111,8 @@ export function sendText(text) {
         ws.send(text);
     }
 }
+// Expose for render.js (break circular dependency)
+window.sendText = sendText;
 
 // -------------------------------------------------
 // ROUTER
@@ -225,6 +227,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
