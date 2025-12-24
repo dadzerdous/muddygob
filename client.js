@@ -200,13 +200,16 @@ export function attemptLogin(loginId, password) {
 }
 
 bindAuthActions(beginCreateAccount, attemptLogin);
-function flashRegen(type) {
-    const bg = document.getElementById("background");
-    if (!bg) return;
 
-    bg.classList.remove("regen-flash");
-    void bg.offsetWidth; // force reflow
-    bg.classList.add("regen-flash");
+function flashRegen(type) {
+    if (type !== "energy") return;
+
+    const el = document.getElementById("hud-energy");
+    if (!el) return;
+
+    el.classList.remove("regen-flash");
+    void el.offsetWidth; // force reflow
+    el.classList.add("regen-flash");
 }
 
 
@@ -222,6 +225,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
