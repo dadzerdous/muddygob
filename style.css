@@ -433,8 +433,19 @@ button:hover,
 }
 
 #hud-energy.regen-flash {
-    background-color: rgba(255, 255, 120, 0.35);
+    animation: energyPulse 0.4s ease-out;
 }
+
+@keyframes energyPulse {
+    0% {
+        background-color: rgba(255, 255, 120, 0.45);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+
 
 
 
