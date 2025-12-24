@@ -2,7 +2,8 @@
 // render.js – Room + System Rendering (Action Bar)
 // ===============================================
 
-import { sendText } from "./client.js";
+// NOTE: sendText is provided via window.sendText
+// to avoid circular ES module imports
 
 const actionBar = document.getElementById("action-bar");
 
@@ -11,6 +12,8 @@ const actionBar = document.getElementById("action-bar");
 // -----------------------------------------------
 export function renderSystem(msg) {
     const out = document.getElementById("output");
+    if (!out) return;
+
     out.innerHTML += `<div class="system-msg">${msg}</div>`;
     out.scrollTop = out.scrollHeight;
 }
@@ -25,7 +28,7 @@ function hideActionBar() {
 }
 
 function showActionBar(objectName, actions) {
-    if (!actionBar) return;
+    if (!actionBar || !window.sendText) return;
 
     actionBar.innerHTML = "";
 
@@ -35,7 +38,7 @@ function showActionBar(objectName, actions) {
         btn.textContent = action;
 
         btn.onclick = () => {
-            sendText(`${action} ${objectName}`);
+            window.sendText(`${action} ${objectName}`);
             hideActionBar();
         };
 
@@ -50,8 +53,9 @@ function showActionBar(objectName, actions) {
 // -----------------------------------------------
 export function renderRoom(data, selfName) {
     const out = document.getElementById("output");
-    out.innerHTML = "";
+    if (!out) return;
 
+    out.innerHTML = "";
     hideActionBar();
 
     // Title
@@ -98,7 +102,7 @@ export function renderRoom(data, selfName) {
     // Exits
     out.innerHTML += `
         <div class="exits-block">
-            <strong>Exits:</strong> ${data.exits.join(", ")}
+            <strong>Exits:</strong> ${(data.exits || []).join(", ")}
         </div>
     `;
 
