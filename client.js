@@ -128,14 +128,23 @@ function routeMessage(data) {
             localStorage.setItem("mg_token", data.token);
             break;
 
-        case "player_state":
-            // Critical: Ensure UI elements are revealed
-            hideAuthUI();
-            if (data.player?.race) applyThemeForRace(data.player.race);
-                selfName = data.player.name;
-            updatePlayerHUD(data.player);
-            updateHandsDisplay(); 
-            break;
+case "player_state":
+    // Critical: Ensure UI elements are revealed
+    hideAuthUI();
+
+    if (data.player?.race) {
+        applyThemeForRace(data.player.race);
+    }
+
+    selfName = data.player.name;
+    updatePlayerHUD(data.player);
+    updateHandsDisplay();
+
+    // 🔑 REQUEST THE CURRENT ROOM AFTER LOGIN
+    sendJSON({ type: "look" });
+
+    break;
+
 
 case "held":
     setClientHeldItem(data.item);
@@ -227,6 +236,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
