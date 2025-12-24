@@ -142,7 +142,7 @@ case "held":
 
 
 case "stats": {
-    updateStatsUI(data);
+    updateHUD(data);
 
     if (lastEnergy !== null && data.energy > lastEnergy) {
         flashRegen("energy");
@@ -222,6 +222,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") sendText("move west");
     if (e.key === "ArrowRight") sendText("move east");
 });
+
 
 
 
