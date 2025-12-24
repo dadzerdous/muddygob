@@ -378,7 +378,7 @@ button:hover,
 
 #hands-bar {
     position: fixed;
-    bottom: 60px; /* sits between action bar + input bar */
+    bottom: 100px; /* sits between action bar + input bar */
     width: 100%;
     display: flex;
     justify-content: center;
@@ -435,6 +435,7 @@ button:hover,
 #hud-energy.regen-flash {
     background-color: rgba(255, 255, 120, 0.35);
 }
+
 
 
 
